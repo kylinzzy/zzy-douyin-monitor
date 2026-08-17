@@ -645,8 +645,7 @@ border:5px solid transparent;border-top-color:rgba(17,17,17,.96);}
       '<span class="meta">点击缩略图打开抖音原作品</span></div>' +
       '<div class="wall">' + thumbs_html + '</div></div>' +
 
-      '<div class="ed-export"><a class="ed-xlsx-btn" href="/api/export-xlsx?sec_uid=' + sec_enc +
-      '&name=' + nick_enc + '" data-nav="backend">下载 Excel 数据</a></div>' +
+      '<div class="ed-export"><a class="ed-xlsx-btn" href="#" id="edXlsxBtn" data-nav="xlsx">下载 Excel 数据</a></div>' +
 
       '<div class="ed-list" style="margin-top:42px"><div class="ed-list-head">' +
       '<span class="h">话题 · 张真源相关</span><span class="meta">TOPICS · 点击跳转抖音搜索</span></div>' +
@@ -659,11 +658,100 @@ border:5px solid transparent;border-top-color:rgba(17,17,17,.96);}
     return html;
   }
 
+  // ---------------- 客户端导出 Excel（无需后端） ----------------
+  function ensureXLSX() {
+    if (window.XLSX) return Promise.resolve(window.XLSX);
+    return new Promise(function (resolve, reject) {
+      var urls = [
+        "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js",
+        "https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"
+      ];
+      var i = 0;
+      function tryLoad() {
+        if (i >= urls.length) { reject(new Error("无法加载 Excel 库")); return; }
+        var s = document.createElement("script");
+        s.src = urls[i++];
+        s.onload = function () { window.XLSX ? resolve(window.XLSX) : tryLoad(); };
+        s.onerror = tryLoad;
+        document.head.appendChild(s);
+      }
+      tryLoad();
+    });
+  }
+  function fmtDateTime(unix) {
+    if (!unix) return "";
+    var t = parseInt(unix, 10); if (isNaN(t)) return "";
+    var d = new Date(t * 1000);
+    var p = function (x) { return (x < 10 ? "0" : "") + x; };
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
+  }
+  function exportXlsx() {
+    var d = LATEST_DATA || window.INITIAL_DATA;
+    if (!d) { alert("暂无数据，无法导出"); return; }
+    var btn = document.getElementById("edXlsxBtn");
+    var old = btn ? btn.textContent : "";
+    if (btn) { btn.textContent = "生成中…"; btn.classList.add("disabled"); }
+    ensureXLSX().then(function (XLSX) {
+      var head = d.head || {};
+      var nick = head.nickname || "张真源";
+      var followers = d.followers || [], likedV = d.liked || [], fd = d.followers_delta || [], labels = d.labels || [];
+      var fans = followers.length ? followers[followers.length - 1] : 0;
+      var liked = likedV.length ? likedV[likedV.length - 1] : 0;
+      var lastUpdate = labels.length ? labels[labels.length - 1] : "—";
+      var now = new Date();
+      var pad = function (x) { return (x < 10 ? "0" : "") + x; };
+      var ts = now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + "_" + pad(now.getHours()) + pad(now.getMinutes());
+
+      var overview = [
+        ["张真源 · 抖音数据月刊 — 数据导出"],
+        ["导出时间", fmtDateTime(Math.floor(Date.now() / 1000))],
+        ["账号", nick],
+        ["抖音号", PUBLIC_ID],
+        ["粉丝数", fans],
+        ["总获赞", liked],
+        ["作品数", d.post_count || (d.post_cards ? d.post_cards.length : 0)],
+        ["最近更新", lastUpdate]
+      ];
+      var trend = [["时间", "粉丝数", "粉丝增量", "总获赞"]];
+      for (var i = 0; i < labels.length; i++) {
+        var inc = (i > 0 && followers[i - 1] != null) ? (followers[i] - followers[i - 1]) : (fd[i] != null ? fd[i] : 0);
+        trend.push([labels[i], followers[i] != null ? followers[i] : "", inc, likedV[i] != null ? likedV[i] : ""]);
+      }
+      var works = [["序号", "作品ID", "标题", "发布时间", "点赞", "评论", "收藏", "分享", "播放", "分享链接", "封面链接"]];
+      var pc = d.post_cards || [];
+      for (var k = 0; k < pc.length; k++) {
+        var c = pc[k];
+        works.push([k + 1, c.aweme_id || "", (c.desc || "").slice(0, 300), fmtDateTime(c.create_time),
+          c.digg || 0, c.comment || 0, c.collect || 0, c.share_c || 0, c.play || 0,
+          c.share || "", c.cover || ""]);
+      }
+      var topics = [["排名", "名称", "播放", "参与", "视频"]];
+      var tp = (d.boards && d.boards.topic) || [];
+      for (var t = 0; t < tp.length; t++) {
+        var it = tp[t], ex = it.extra || {};
+        topics.push([it.rank, it.name, ex.view_count || 0, ex.user_count || 0, ex.video_count || 0]);
+      }
+
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(overview), "概览");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(trend), "粉丝获赞趋势");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(works), "作品明细");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(topics), "话题");
+      var safe = (nick || "张真源").replace(/[^\w一-龥\-_]/g, "_").slice(0, 30) || "douyin";
+      XLSX.writeFile(wb, safe + "_数据_" + ts + ".xlsx");
+    }).catch(function (err) {
+      alert("Excel 导出失败：" + (err && err.message ? err.message : err) + "\n（需可访问 cdn.jsdelivr.net 加载导出库）");
+    }).then(function () {
+      if (btn) { btn.textContent = old; btn.classList.remove("disabled"); }
+    });
+  }
+
   // ---------------- 初始化 ----------------
   var root = document.getElementById("root");
   if (!root) return;
 
-  function paint(d) { root.innerHTML = renderDashboard(d); }
+  var LATEST_DATA = null;
+  function paint(d) { LATEST_DATA = d; root.innerHTML = renderDashboard(d); applyBackendState(); }
 
   // 首屏：用构建时内联的数据，避免白屏
   paint(window.INITIAL_DATA || { labels: [], post_cards: [], mode: "awaiting-config", post_count: 0, head: {} });
@@ -690,7 +778,8 @@ border:5px solid transparent;border-top-color:rgba(17,17,17,.96);}
     if (ev.target.closest && ev.target.closest("svg [data-i]")) tipLayer.style.display = "none";
   });
 
-  // 后端探测：本地服务（有后端）真实跳转；无后端（GitHub/CloudStudio）一次性置灰 backend 链接
+  // 后端探测：本地服务（有后端）真实跳转；无后端（GitHub/CloudStudio）置灰 backend 链接
+  var BACKEND_OK = null;
   function probe() {
     return fetch("/api/users").then(function (r) { return r.json(); })
       .then(function (j) { return !!(j && j.ok); })
@@ -702,22 +791,29 @@ border:5px solid transparent;border-top-color:rgba(17,17,17,.96);}
     a.setAttribute("title", msg);
     a.setAttribute("aria-disabled", "true");
   }
-  var reloadA = document.querySelector('a[data-nav="reload"]');
-  var backends = [].slice.call(document.querySelectorAll('a[data-nav="backend"]'));
-  if (reloadA) reloadA.addEventListener("click", function (e) { e.preventDefault(); location.reload(); });
-  backends.forEach(function (a) {
-    a.addEventListener("click", function (e) {
+  // 每次重渲染后根据探测结果置灰 backend 链接（无需后端的功能保持可用）
+  function applyBackendState() {
+    if (BACKEND_OK === false) {
+      var bs = document.querySelectorAll('a[data-nav="backend"]');
+      for (var i = 0; i < bs.length; i++)
+        showDisabled(bs[i], "需在本机运行 python src/server.py 后访问 localhost 才能使用（静态托管站无后端）");
+    }
+  }
+  // 点击事件委托（重渲染安全）
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest ? e.target.closest("a[data-nav]") : null;
+    if (!a) return;
+    var nav = a.getAttribute("data-nav");
+    if (nav === "reload") { e.preventDefault(); location.reload(); return; }
+    if (nav === "xlsx") { e.preventDefault(); exportXlsx(); return; }
+    if (nav === "backend") {
       e.preventDefault();
-      probe().then(function (ok) {
-        if (ok) window.location.href = a.getAttribute("href");
-        else showDisabled(a, "需在本地运行监测服务后使用");
-      });
-    });
+      if (BACKEND_OK) { window.location.href = a.getAttribute("href"); }
+      else if (BACKEND_OK === false) { /* 已置灰，无需处理 */ }
+      else { probe().then(function (ok) { BACKEND_OK = ok; applyBackendState(); if (ok) window.location.href = a.getAttribute("href"); }); }
+    }
   });
-  probe().then(function (ok) {
-    if (ok) return;
-    backends.forEach(function (a) { showDisabled(a, "需在本地运行监测服务后使用"); });
-  });
+  probe().then(function (ok) { BACKEND_OK = ok; applyBackendState(); });
 
   // 实时拉取最新 data.json（同源 → jsDelivr → raw），成功则覆盖重渲染
   var DATA_SOURCES = [
