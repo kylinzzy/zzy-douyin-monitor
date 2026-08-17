@@ -100,6 +100,11 @@ display:block;}
 text-align:right;font-feature-settings:"tnum";}
 .ed-list-foot{padding:14px 0 0;font-size:10.5px;letter-spacing:1.8px;color:#888;text-align:center;}
 
+/* 无后端时 nav/backend 按钮的禁用样式：仅变灰 + tooltip，不替换 DOM */
+.nav-links a.disabled,.ed-xlsx-btn.disabled{
+  opacity:.32;cursor:not-allowed;color:var(--muted);pointer-events:none;
+}
+
 /* 作品缩略图矩阵（替代长文字列表，数量已并入块标题） */
 .wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:11px;margin-top:14px;}
 .wt{position:relative;display:block;aspect-ratio:3/4;border-radius:13px;overflow:hidden;
@@ -691,308 +696,43 @@ def _work_thumb(c):
   </div>
 </a>"""
 
+# ---------------- 前端渲染站（自动同步 GitHub / 实时拉取 data.json） ----------------
+from common import ROOT, DATA_DIR
+
+_FRONTEND_TPL = ("<!DOCTYPE html>\n"
+    "<html lang='zh-CN'><head><meta charset='utf-8'>\n"
+    "<meta name='viewport' content='width=device-width,initial-scale=1'>\n"
+    "<title>张真源 · 抖音数据月刊</title>\n"
+    "<style>__CSS__</style></head>\n"
+    "<body>\n<div id='root'></div>\n"
+    "<script>window.INITIAL_DATA = __INITIAL__;</script>\n"
+    "<script>__JS__</script>\n</body></html>")
+
+def _build_frontend_html(data):
+    js = (ROOT / "assets" / "dashboard.js").read_text(encoding="utf-8")
+    css = PAGE_CSS + DASHBOARD_CSS
+    initial = json.dumps(data, ensure_ascii=False)
+    return (_FRONTEND_TPL
+            .replace("__CSS__", css)
+            .replace("__INITIAL__", initial)
+            .replace("__JS__", js))
+
+def export_site(data=None):
+    """导出看板静态站：data.json（前端运行时拉取）+ 自包含 index.html。
+
+    写入 data/data.json、data/dashboard.html、deploy/index.html 三处，
+    供本地服务、CloudStudio、GitHub Pages 共用同一份前端渲染。
+    """
+    data = data or build_data()
+    (DATA_DIR / "data.json").write_text(
+        json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    html = _build_frontend_html(data)
+    DASHBOARD_PATH.write_text(html, encoding="utf-8")
+    deploy = ROOT / "deploy" / "index.html"
+    deploy.parent.mkdir(parents=True, exist_ok=True)
+    deploy.write_text(html, encoding="utf-8")
+    return DASHBOARD_PATH
 
 def render():
-    d = build_data()
-    has = bool(d["labels"]) and bool(d["post_cards"])
-    mode = d["mode"]
-
-    if not has:
-        fans = liked = works = 0
-        fans_d = liked_d = works_d = "<div class='v'>—</div>"
-        last_update = "—"
-        thumbs_html = ""
-        c_fans = c_liked = c_pub = "<div class='chart-empty'>暂无数据</div>"
-        tp_chips = "<div class='muted'>暂无数据</div>"
-        head_html = ""
-    else:
-        fans = d["followers"][-1]
-        liked = d["liked"][-1]
-        works = d["works_pub"][-1] or d["post_count"]
-        fans_1h = d["followers_delta"][-1] if d["followers_delta"] else 0
-        liked_1h = (d["liked"][-1] - d["liked"][-2]) if len(d["liked"]) >= 2 else 0
-        # 监测期内相对起始的总变化量（≥1 个数据点就有意义）
-        fans_total = (d["followers"][-1] - d["followers"][0]) if d["followers"] else 0
-        liked_total = (d["liked"][-1] - d["liked"][0]) if d["liked"] else 0
-        last_update = d["labels"][-1]
-
-        # KPI 卡片：总值 + 括号内写「具体到个位的整数」+ 下方保留「近1小时/监测期」delta
-        def _sign_html(n):
-            if n > 0: return f"<b class='pos'>+{humanize(n)}</b>"
-            if n < 0: return f"<b class='neg'>{humanize(n)}</b>"
-            return "<b class='zero'>±0</b>"
-
-        fans_d = (f"<div class='v'>{humanize(fans)} "
-                  f"<span class='raw'>({fans:,})</span></div>"
-                  f"<div class='d'>近1小时 ({_sign_html(fans_1h)}) "
-                  f"· 监测期 {_sign_html(fans_total)}</div>")
-        liked_d = (f"<div class='v'>{humanize(liked)} "
-                   f"<span class='raw'>({liked:,})</span></div>"
-                   f"<div class='d'>近1小时 ({_sign_html(liked_1h)}) "
-                   f"· 监测期 {_sign_html(liked_total)}</div>")
-        works_d = (f"<div class='v'>{humanize(works)} "
-                   f"<span class='raw'>({works:,})</span></div>"
-                   f"<div class='d'>已入库 {d['post_count']} · "
-                   f"近1小时 {_sign_html(works - (d['works_pub'][-2] if len(d['works_pub'])>=2 else 0))}</div>")
-
-        thumbs_html = "".join(
-            _work_thumb(c) for c in d["post_cards"])
-
-        # 粉丝趋势 / 获赞趋势：用「相对起始」画法（首点 = 0）——
-        # 解决「百万级绝对值巨大横线、波动看不出来」的问题
-        fans_x = [l.split(" ")[-1][:5] if " " in l else l for l in d["labels"]]
-        c_fans = _svg_line(fans_x, d["followers"], GREEN_D,
-                           relative_start=True,
-                           point_titles=[
-                               f'{l}\n粉丝 {humanize(v)}（{(v - d["followers"][0]):+,}）'
-                               for l, v in zip(d["labels"], d["followers"])
-                           ],
-                           chart_id="chart-fans")
-        c_liked = _svg_line(fans_x, d["liked"], GREEN_BR,
-                            relative_start=True,
-                            point_titles=[
-                                f'{l}\n获赞 {humanize(v)}（{(v - d["liked"][0]):+,}）'
-                                for l, v in zip(d["labels"], d["liked"])
-                            ],
-                            chart_id="chart-liked")
-        # 发布时间 × 点赞：对数轴折线 + JS 自绘 tooltip（半透明绿底）+ 点击跳转抖音视频
-        pub_x = [p["t"][5:] for p in d["publish"]]  # mm-dd
-        pub_titles = [
-            f'{p["t"]}  点赞 {_fmt_num(p["digg"])}\n{p["desc"]}\n· 点击查看抖音原作品 →'
-            for p in d["publish"]
-        ]
-        pub_hrefs = [p.get("url", "") for p in d["publish"]]
-        c_pub = _svg_line(pub_x, [p["digg"] for p in d["publish"]],
-                          GREEN_D, w=1140, log=True,
-                          point_titles=pub_titles, point_hrefs=pub_hrefs,
-                          chart_id="chart-pub")
-
-        tp_chips = _board_chips(d["boards"]["topic"])
-
-    data_json = json.dumps(d, ensure_ascii=False)
-    works_count = d["post_count"]
-
-    # 头部：头像 + 名字 + 抖音号 → 整块包到主页链接
-    head = d.get("head") or {}
-    avatar = head.get("avatar_url") or ""
-    if avatar:
-        # 抖音图链常见 301，需直链扩展；Dashboard 内嵌可用 https 协议即可
-        avatar_html = f"<img class='hero-avatar' src='{avatar}' alt='张真源'>"
-    else:
-        avatar_html = "<div class='hero-fallback'>张</div>"
-    profile_url = head.get("profile_url") or "https://www.douyin.com/"
-    nickname = head.get("nickname") or TARGET_NAME
-    public_id = "29832527783"
-    sec_uid = head.get("sec_uid") or ""
-    sec_enc = urllib.parse.quote(sec_uid)
-    nick_enc = urllib.parse.quote(nickname)
-    if head.get("aweme_count_pub") and not has:
-        works_d_v = "—"
-    header_html = f"""
-<nav class='nav'>
-  <div class='nav-in'>
-    <a class='brand' href='{profile_url}' target='_blank' rel='noopener' title='在抖音打开 {nickname} 主页'>
-      <span class='logo'>张</span><span>{nickname}</span>
-    </a>
-    <div class='nav-links'>
-      <a href='/dashboard.html' data-nav='reload' class='active'>看板</a>
-      <a href='/fetch.html' data-nav='backend'>抓取账号</a>
-      <a href='/admin' data-nav='backend'>后台管理</a>
-    </div>
-    <div class='nav-status'><span class='dot-live'></span>最近更新 {last_update}</div>
-  </div>
-</nav>"""
-
-    html = f"""<!DOCTYPE html>
-<html lang='zh-CN'><head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>张真源 · 抖音数据月刊</title>
-<meta http-equiv='refresh' content='300'>
-
-<style>{PAGE_CSS}{DASHBOARD_CSS}</style></head>
-<body>
-{header_html}
-<div class='wrap'>
-
-<div class='ed-masthead'>
-  <span class='motto'>ALL FOR ZZY</span>
-  <div class='lt'>{nickname} · 抖音数据月刊</div>
-  <div class='rt'>抖音号 <b>{public_id}</b><br>更新时间 {last_update}</div>
-  <span class='deco' aria-hidden='true'>
-    <svg class='bf' viewBox='0 0 100 60'>
-      <path d='M 50 30 Q 30 8 14 16 Q 6 22 16 32 Q 34 38 50 32 Z'/>
-      <path d='M 50 30 Q 70 8 86 16 Q 94 22 84 32 Q 66 38 50 32 Z'/>
-      <path d='M 50 32 Q 36 42 24 50 Q 20 54 30 52 Q 42 48 50 36 Z'/>
-      <path d='M 50 32 Q 64 42 76 50 Q 80 54 70 52 Q 58 48 50 36 Z'/>
-      <ellipse cx='50' cy='32' rx='1.2' ry='5'/>
-    </svg>
-    <svg class='sd' viewBox='0 0 64 24'>
-      <circle cx='6' cy='6' r='1.2'/><circle cx='14' cy='14' r='.7'/>
-      <circle cx='22' cy='4' r='.9'/><circle cx='30' cy='18' r='.5'/>
-      <circle cx='38' cy='10' r='1'/><circle cx='46' cy='6' r='.6'/>
-      <circle cx='54' cy='16' r='.9'/><circle cx='58' cy='4' r='.5'/>
-    </svg>
-  </span>
-</div>
-<div class='ed-vol'>本期 <b>ISSUE № 038</b> · 自动每小时更新 · 监测第 17 小时</div>
-
-<div class='ed-stat'>
-  <span class='deco' aria-hidden='true'>
-    <svg viewBox='0 0 100 60'>
-      <path d='M 50 30 Q 32 10 16 18 Q 8 24 18 32 Q 35 38 50 32 Z'/>
-      <path d='M 50 30 Q 68 10 84 18 Q 92 24 82 32 Q 65 38 50 32 Z'/>
-      <path d='M 50 32 Q 38 42 26 50 Q 22 54 30 52 Q 42 48 50 36 Z'/>
-      <path d='M 50 32 Q 62 42 74 50 Q 78 54 70 52 Q 58 48 50 36 Z'/>
-    </svg>
-  </span>
-  <div>
-    <div class='label'>01 ──── FOLLOWERS · 粉丝</div>
-    <div class='num'>{fans:,}<span class='raw'>总数 · {humanize(fans)}</span></div>
-    <div class='sub'>粉丝总数 · 监测每小时刷新一次</div>
-  </div>
-  <div class='meta'>
-    <div>近 1 小时 <b>{_sign_html(fans_1h)}</b></div>
-    <div>监测期累计 <b>{_sign_html(fans_total)}</b></div>
-  </div>
-</div>
-
-<div class='ed-rule'></div>
-
-<div class='ed-stat'>
-  <span class='deco' aria-hidden='true'>
-    <svg viewBox='0 0 100 60'>
-      <path d='M 50 30 Q 32 10 16 18 Q 8 24 18 32 Q 35 38 50 32 Z'/>
-      <path d='M 50 30 Q 68 10 84 18 Q 92 24 82 32 Q 65 38 50 32 Z'/>
-      <path d='M 50 32 Q 38 42 26 50 Q 22 54 30 52 Q 42 48 50 36 Z'/>
-      <path d='M 50 32 Q 62 42 74 50 Q 78 54 70 52 Q 58 48 50 36 Z'/>
-    </svg>
-  </span>
-  <div>
-    <div class='label'>02 ──── TOTAL PRAISE · 累计获赞</div>
-    <div class='num'>{liked:,}<span class='raw'>累计 · {humanize(liked)}</span></div>
-    <div class='sub'>累计获赞总数</div>
-  </div>
-  <div class='meta'>
-    <div>近 1 小时 <b>{_sign_html(liked_1h)}</b></div>
-    <div>监测期累计 <b>{_sign_html(liked_total)}</b></div>
-  </div>
-</div>
-
-<div class='ed-rule'></div>
-
-<div class='ed-charts'>
-  <div class='ed-chart'>
-    <div class='h'>粉丝增长曲线</div>
-    <div class='sub'>RELATIVE · 相对起始</div>
-    <div class='frame chart-wrap'>{c_fans}</div>
-  </div>
-  <div class='ed-chart'>
-    <div class='h'>获赞增长曲线</div>
-    <div class='sub'>RELATIVE · 相对起始</div>
-    <div class='frame chart-wrap'>{c_liked}</div>
-  </div>
-</div>
-
-<div class='ed-pub'>
-  <div class='h'>作品发布时间 × 点赞</div>
-  <div class='sub'>LOG SCALE · 对数坐标 · 点击数据点在抖音打开原作品</div>
-  <div class='frame chart-wrap'>{c_pub}</div>
-</div>
-
-<div class='ed-wall'>
-  <div class='ed-list-head'>
-    <span class='h'>全部作品 · 共 {works_count} 件</span>
-    <span class='meta'>点击缩略图打开抖音原作品</span>
-  </div>
-  <div class='wall'>
-    {thumbs_html}
-  </div>
-</div>
-
-<div class='ed-export'>
-  <a class='ed-xlsx-btn' href='/api/export-xlsx?sec_uid={sec_enc}&name={nick_enc}' data-nav='backend'>下载 Excel 数据</a>
-</div>
-
-
-
-<div class='ed-list' style='margin-top:42px'>
-  <div class='ed-list-head'>
-    <span class='h'>话题 · 张真源相关</span>
-    <span class='meta'>TOPICS · 点击跳转抖音搜索</span>
-  </div>
-  <div class='ed-topics'>{tp_chips}</div>
-</div>
-
-<div class='foot'>
-  <div class='motto-row'>ZHANG ZHEN YUAN</div>
-  <b>张真源 · 抖音数据月刊</b> · 本地部署 · 仅数据展示，无云端后端
-  <div class='latin'>All for ZZY — Follow the light across time and space</div>
-</div>
-
-</div>
-
-<script>
-(function(){{
-  // 给所有带 data-i 的 SVG 圆点装自绘 tooltip
-  function esc(s){{return (s||'').replace(/[&<>"]/g, c=>({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}}[c]));}}
-  document.querySelectorAll('svg [data-i]').forEach(function(g){{
-    var parent = g.closest('svg');
-    if(!parent) return;
-    var wrap = parent.parentElement;
-    if(!wrap) return;
-    var titleTag = g.querySelector('title');
-    var title = titleTag ? titleTag.textContent : '';
-    if(!title) return;
-    g.style.cursor = 'pointer';
-    g.addEventListener('mouseenter', function(ev){{
-      if(wrap.__tip) return;
-      var tip = document.createElement('div');
-      tip.className = 'dy-tip';
-      tip.textContent = title;
-      wrap.style.position='relative';
-      wrap.appendChild(tip);
-      wrap.__tip = tip;
-      var r = g.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
-      tip.style.left = (r.left + r.width/2 - wr.left) + 'px';
-      tip.style.top  = (r.top - wr.top - 8) + 'px';
-    }});
-    g.addEventListener('mouseleave', function(){{
-      if(wrap.__tip) {{ wrap.__tip.remove(); wrap.__tip = null; }}
-    }});
-  }});
-}})();
-
-(function(){{
-  // 自适应导航：本地服务（有后端）真实跳转；云端静态托管 / 离线（无后端）时
-  // 点击「抓取账号」「后台管理」就地提示
-  function probe(){{
-    return fetch('/api/users').then(function(r){{return r.json();}})
-      .then(function(j){{return !!(j && j.ok);}})
-      .catch(function(){{return false;}});
-  }}
-  function showHint(a, msg){{
-    if(!a || !a.parentNode) return;
-    var s = document.createElement('span');
-    s.className = 'nav-note';
-    s.textContent = msg;
-    a.parentNode.replaceChild(s, a);
-  }}
-  var reloadA = document.querySelector('a[data-nav="reload"]');
-  var backends = [].slice.call(document.querySelectorAll('a[data-nav="backend"]'));
-  if (reloadA) {{
-    reloadA.addEventListener('click', function(e){{ e.preventDefault(); location.reload(); }});
-  }}
-  backends.forEach(function(a){{
-    a.addEventListener('click', function(e){{
-      e.preventDefault();
-      probe().then(function(ok){{
-        if (ok) {{ window.location.href = a.getAttribute('href'); }}
-        else {{ showHint(a, '需在本地运行监测服务后使用'); }}
-      }});
-    }});
-  }});
-}})();
-</script>
-</body></html>"""
-    DASHBOARD_PATH.write_text(html, encoding="utf-8")
-    return DASHBOARD_PATH
+    """生成看板（兼容 server.py / run.py 调用）：导出前端站。"""
+    return export_site()
