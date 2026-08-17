@@ -14,6 +14,7 @@ import hashlib
 import secrets
 import argparse
 import sqlite3
+import threading
 import html
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs, quote, quote as _quote
@@ -443,6 +444,19 @@ class Handler(BaseHTTPRequestHandler):
                 self._serve_file(DASHBOARD_PATH)
                 return
 
+            if u.path == "/data.json":
+                self._serve_json_file(DATA_DIR / "data.json")
+                return
+
+            # 云平台健康检查（Render/Railway/Heroku 等会定时访问）
+            if u.path == "/healthz":
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Content-Length", "2")
+                self.end_headers()
+                self.wfile.write(b"ok")
+                return
+
             if u.path == "/fetch.html":
                 self._ensure_html()
                 self._serve_file(FETCH_HTML)
@@ -726,6 +740,18 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
+    def _serve_json_file(self, path):
+        if not path.exists():
+            self.send_error(404, f"文件不存在: {path}")
+            return
+        data = path.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        self.wfile.write(data)
+
     def _serve_text(self, body: bytes, status: int = 200):
         self.send_response(status)
         self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -747,7 +773,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=SERVER_PORT)
     args = ap.parse_args()
-    port = args.port
+    # 云平台通过环境变量 PORT 注入（Render/Railway/Heroku 等）；本地默认 8765
+    port = int(os.environ.get("PORT", args.port))
     _ensure_html_files()
     # 启动后渲染一次 dashboard.html，让磁盘与最新代码一致（避免 handler 缓存旧版）
     try:
@@ -755,8 +782,10 @@ def main():
         _d.render()
     except Exception as e:
         log.warning("启动时 render() 失败：%s", e)
-    srv = ThreadingHTTPServer(("127.0.0.1", port), Handler)
-    log.info("本地 web 服务已启动 http://localhost:%d", port)
+    # 内嵌定时采集：部署到云端时由本进程承担每小时更新，无需外部 cron
+    _start_scheduler()
+    srv = ThreadingHTTPServer(("0.0.0.0", port), Handler)
+    log.info("web 服务已启动 http://0.0.0.0:%d", port)
     log.info("  · 张真源看板：http://localhost:%d/dashboard.html", port)
     log.info("  · 抓取任意账号：http://localhost:%d/fetch.html", port)
     log.info("  · 后台管理（默认账号 %s / %s）：http://localhost:%d/admin",
@@ -769,6 +798,32 @@ def main():
     except KeyboardInterrupt:
         log.info("已停止")
         srv.shutdown()
+
+
+# ---------------- 内嵌定时采集（部署到云端时使用） ----------------
+def _scheduler_loop():
+    """每小时采集一次并重新渲染看板（后台守护线程）。"""
+    import time as _time
+    import collector as _collector
+    import dashboard as _dashboard
+    while True:
+        try:
+            log.info("[scheduler] 开始每小时采集…")
+            _collector.collect()
+            _dashboard.render()
+            log.info("[scheduler] 采集 + 渲染完成")
+        except Exception as e:
+            log.warning("[scheduler] 采集异常：%s", e)
+        _time.sleep(3600)
+
+
+def _start_scheduler():
+    if os.environ.get("DISABLE_SCHEDULER", "").lower() in ("1", "true", "yes", "on"):
+        log.info("[scheduler] 已通过 DISABLE_SCHEDULER 关闭")
+        return
+    t = threading.Thread(target=_scheduler_loop, daemon=True)
+    t.start()
+    log.info("[scheduler] 已启动（每小时采集一次，后台常驻）")
 
 
 if __name__ == "__main__":
