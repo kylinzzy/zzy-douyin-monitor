@@ -47,6 +47,8 @@ def cfg(key: str, default: str = ""):
 
 
 # ---- 配置项 ----
+# 数据源（唯一权威开关）：douyin_web=免费 Cookie 模式；maxhub=付费 API（仅显式设为 maxhub 且配 Key 才走）
+DATA_SOURCE = cfg("DATA_SOURCE", "douyin_web")
 # 数据源优先级：抖音 web 端（需 Cookie，免费真实）> MaxHub（付费兜底）
 MAXHUB_API_KEY = cfg("MAXHUB_API_KEY")
 # 抖音登录 Cookie（等同账号凭据，建议用小号）。用于免费真实拉取主页数据。
