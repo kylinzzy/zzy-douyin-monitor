@@ -1,10 +1,11 @@
-"""采集编排：优先抖音 web 端（Cookie 免费真实），MaxHub 作为付费兜底。
+"""采集编排：默认抖音 web 端（Cookie 免费真实），MaxHub 仅作显式付费兜底。
 
 ⚠️ 永不编造：任何情况下拿不到真实数据就明确报错 / 空状态，绝不填充假数字。
-数据源优先级：
-  1) DOUYIN_COOKIE 配置 → 直接拉 douyin.com/user/{sec_uid} 的 RENDER_DATA（真实、免费、零积分）
-  2) 仅 MAXHUB_API_KEY 配置 → 走 MaxHub 聚合 API（付费、按调用计费）
-  3) 都未配置 → awaiting-config（dashboard/report 显示明确空状态）
+数据源（由 .env 的 DATA_SOURCE 唯一决定，默认 douyin_web）：
+  1) DATA_SOURCE=maxhub 且配了 MAXHUB_API_KEY → MaxHub 聚合 API（付费、按调用计费）
+  2) 其余一切情况（含 douyin_web / 未设置 / 空）→ DOUYIN_COOKIE 配置即拉 douyin.com
+     （真实、免费、零积分）；即使 MAXHUB_API_KEY 被误填也不会触发付费调用。
+  3) 都没有 → awaiting-config（dashboard/report 显示明确空状态）
 """
 import re
 import json
@@ -16,7 +17,7 @@ import requests
 from common import (log, now_iso, UA, DOUYIN_COOKIE, DOUYIN_SEC_UID,
                     DOUYIN_SHARE_URL, DOUYIN_SHORT_ID, TARGET_NAME,
                     TRACK_RECENT_DAYS, MAX_POST_DETAIL, MAXHUB_API_KEY,
-                    dig, get_meta, set_meta)
+                    DATA_SOURCE, dig, get_meta, set_meta)
 from storage import (insert_profile, upsert_post, insert_post_stats,
                      insert_board, save_user)
 from maxhub import MaxHubClient
@@ -589,6 +590,18 @@ def collect_via_maxhub():
 # ---------------- 主入口 ----------------
 
 def collect():
+    # 唯一权威开关：仅当显式 DATA_SOURCE=maxhub 且配了 Key，才走付费 MaxHub API。
+    # 其余一切情况（含 DATA_SOURCE=douyin_web / 未设置 / 空）一律免费 web 模式，
+    # 即使 MAXHUB_API_KEY 被误填也不会触发付费调用，确保零积分消耗。
+    if DATA_SOURCE == "maxhub" and MAXHUB_API_KEY:
+        try:
+            return collect_via_maxhub()
+        except Exception as e:
+            log.error("MaxHub 采集失败: %s", e)
+            set_meta("mode", "error")
+            set_meta("error", str(e))
+            return {"mode": "error", "error": str(e)}
+    # 免费抖音 web 端（需 Cookie）：真实、零积分
     if DOUYIN_COOKIE:
         try:
             return collect_via_web()
@@ -597,15 +610,7 @@ def collect():
             set_meta("mode", "error")
             set_meta("error", str(e))
             return {"mode": "error", "error": str(e)}
-    if MAXHUB_API_KEY:
-        try:
-            return collect_via_maxhub()
-        except Exception as e:
-            log.error("MaxHub 采集失败: %s", e)
-            set_meta("mode", "error")
-            set_meta("error", str(e))
-            return {"mode": "error", "error": str(e)}
     set_meta("awaiting", "1")
     set_meta("mode", "awaiting-config")
     return {"mode": "awaiting-config", "ts": now_iso(),
-            "reason": "未配置 DOUYIN_COOKIE / MAXHUB_API_KEY"}
+            "reason": "未配置 DOUYIN_COOKIE（且 DATA_SOURCE≠maxhub）"}
