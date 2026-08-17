@@ -199,6 +199,11 @@ display:block;}
 text-align:right;font-feature-settings:"tnum";}
 .ed-list-foot{padding:14px 0 0;font-size:10.5px;letter-spacing:1.8px;color:#888;text-align:center;}
 
+/* 无后端时 nav/backend 按钮的禁用样式：仅变灰 + tooltip，不替换 DOM */
+.nav-links a.disabled,.ed-xlsx-btn.disabled{
+  opacity:.32;cursor:not-allowed;color:var(--muted);pointer-events:none;
+}
+
 /* 作品缩略图矩阵（替代长文字列表，数量已并入块标题） */
 .wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:11px;margin-top:14px;}
 .wt{position:relative;display:block;aspect-ratio:3/4;border-radius:13px;overflow:hidden;
@@ -729,6 +734,10 @@ border:5px solid transparent;border-top-color:rgba(17,17,17,.96);}
   </div>
 </div>
 
+<div class='ed-export'>
+  <a class='ed-xlsx-btn' href='/api/export-xlsx?sec_uid=MS4wLjABAAAAOpX2NjhZ8eTZFkP6BeKiWOxQXo264vHMFU8Zngk6Nrh61qKZjDjJO5ZvnyoZKN_E&name=%E6%97%B6%E4%BB%A3%E5%B0%91%E5%B9%B4%E5%9B%A2-%E5%BC%A0%E7%9C%9F%E6%BA%90' data-nav='backend'>下载 Excel 数据</a>
+</div>
+
 
 
 <div class='ed-list' style='margin-top:42px'>
@@ -737,10 +746,6 @@ border:5px solid transparent;border-top-color:rgba(17,17,17,.96);}
     <span class='meta'>TOPICS · 点击跳转抖音搜索</span>
   </div>
   <div class='ed-topics'><div class='ed-topics-row'><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源'># 张真源<span class='v'>播放 456.11亿 · 参与 454.5万</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%B5%E7%9C%9F%E6%BA%90?type=challenge' target='_blank' rel='noopener' title='在抖音查看 張真源'># 張真源<span class='v'>播放 673.0万 · 参与 2682</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E8%B7%91%E7%94%B7?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源跑男'># 张真源跑男<span class='v'>播放 5.78亿 · 参与 6.8万</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90ep?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源ep'># 张真源ep<span class='v'>播放 2328.2万 · 参与 7897</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E6%96%B0%E6%AD%8C?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源新歌'># 张真源新歌<span class='v'>播放 6169.0万 · 参与 2.1万</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E5%A5%94%E8%B7%91%E5%90%A7?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源奔跑吧'># 张真源奔跑吧<span class='v'>播放 10.85亿 · 参与 9.0万</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E4%B8%A5%E6%B5%A9%E7%BF%94?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源严浩翔'># 张真源严浩翔<span class='v'>播放 2.14亿 · 参与 1.8万</span></a><a class='tg' href='https://www.douyin.com/search/%E5%AE%8B%E4%BA%9A%E8%BD%A9%E5%BC%A0%E7%9C%9F%E6%BA%90?type=challenge' target='_blank' rel='noopener' title='在抖音查看 宋亚轩张真源'># 宋亚轩张真源<span class='v'>播放 2.16亿 · 参与 1.5万</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E8%BF%9B%E8%A1%8C%E6%9B%B2?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源进行曲'># 张真源进行曲<span class='v'>播放 2.36亿 · 参与 8787</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E5%91%BC%E5%AE%89?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源呼安'># 张真源呼安<span class='v'>播放 3847.9万 · 参与 3104</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E7%94%A8%E6%83%85?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源用情'># 张真源用情<span class='v'>播放 3357.0万 · 参与 4396</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E5%AE%8B%E4%BA%9A%E8%BD%A9?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源宋亚轩'># 张真源宋亚轩<span class='v'>播放 1.31亿 · 参与 1.3万</span></a></div></div>
-</div>
-
-<div class='ed-export'>
-  <a class='ed-xlsx-btn' href='/api/export-xlsx?sec_uid=MS4wLjABAAAAOpX2NjhZ8eTZFkP6BeKiWOxQXo264vHMFU8Zngk6Nrh61qKZjDjJO5ZvnyoZKN_E&name=%E6%97%B6%E4%BB%A3%E5%B0%91%E5%B9%B4%E5%9B%A2-%E5%BC%A0%E7%9C%9F%E6%BA%90' data-nav='backend'>下载 Excel 数据</a>
 </div>
 
 <div class='foot'>
@@ -790,12 +795,11 @@ border:5px solid transparent;border-top-color:rgba(17,17,17,.96);}
       .then(function(j){return !!(j && j.ok);})
       .catch(function(){return false;});
   }
-  function showHint(a, msg){
-    if(!a || !a.parentNode) return;
-    var s = document.createElement('span');
-    s.className = 'nav-note';
-    s.textContent = msg;
-    a.parentNode.replaceChild(s, a);
+  function showDisabled(a, msg){
+    if(!a) return;
+    a.classList.add('disabled');
+    a.setAttribute('title', msg);
+    a.setAttribute('aria-disabled', 'true');
   }
   var reloadA = document.querySelector('a[data-nav="reload"]');
   var backends = [].slice.call(document.querySelectorAll('a[data-nav="backend"]'));
@@ -807,9 +811,14 @@ border:5px solid transparent;border-top-color:rgba(17,17,17,.96);}
       e.preventDefault();
       probe().then(function(ok){
         if (ok) { window.location.href = a.getAttribute('href'); }
-        else { showHint(a, '需在本地运行监测服务后使用'); }
+        else { showDisabled(a, '需在本地运行监测服务后使用'); }
       });
     });
+  });
+  // 探测后端：如果是无后端环境（如 CloudStudio 静态版），一次性把所有 backend 链接置灰
+  probe().then(function(ok){
+    if (ok) return;
+    backends.forEach(function(a){ showDisabled(a, '需在本地运行监测服务后使用'); });
   });
 })();
 </script>
