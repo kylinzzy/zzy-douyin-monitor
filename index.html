@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang='zh-CN'><head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>张真源 · 抖音数据月刊</title>
+<meta http-equiv='refresh' content='300'>
+
+<style>
+:root{
+--g:#16a34a;--gd:#157a3a;--gl:#22c55e;--gxl:#f1faf4;--gxx:#ffffff;
+/* 张真源应援深绿：H1/H2/KPI 大数字等主要文字统一用 --ink（深绿） */
+--ink:#14532d;--ink-deep:#0a3d24;--ink-mid:#1f5e3a;
+--muted:#4a7060;--muted2:#7a9a8c;
+--paper:#faf8f3;--rule:#1a1a1a;--rule2:#e6e3dc;--rule3:#c9c4b8;
+/* 暖橘点缀（应援海报里的补丁色，仅作 motto / 编号等小标记用） */
+--accent-warm:#c2410c;
+--bd:rgba(20,124,58,.10);--bd2:rgba(20,124,58,.20);
+--shadow:0 1px 2px rgba(16,58,43,.04),0 10px 30px rgba(16,58,43,.07);
+--shadow-sm:0 1px 2px rgba(16,58,43,.05);
+--shadow-lg:0 2px 6px rgba(16,58,43,.06),0 24px 50px rgba(16,58,43,.12);
+--radius:20px;--radius-sm:13px;
+--ff:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+--serif:"Source Han Serif SC","Noto Serif CJK SC","Songti SC","STSongti-SC-Regular","SimSun","宋体",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+html,body{font-family:var(--ff);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;
+line-height:1.55;background:var(--paper);background-attachment:fixed;}
+a{color:inherit;text-decoration:none;}
+img{max-width:100%;}
+
+/* 顶部导航 */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.7);
+backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);
+border-bottom:1px solid var(--bd);box-shadow:0 1px 0 rgba(255,255,255,.6);}
+.nav-in{max-width:1080px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;
+justify-content:space-between;gap:16px;}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.3px;color:var(--gd);font-size:16px;}
+.brand .logo{width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--gl),var(--gd));
+color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;
+box-shadow:0 6px 14px rgba(22,163,74,.3);}
+.nav-links{display:flex;gap:5px;align-items:center;}
+.nav-links a{padding:8px 15px;border-radius:999px;font-size:13px;font-weight:600;color:var(--gd);transition:.2s;}
+.nav-links a:hover{background:rgba(22,163,74,.1);}
+.nav-links a.active{background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;
+box-shadow:0 6px 16px rgba(22,163,74,.28);}
+.nav-status{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px;}
+.nav-status .dot-live{width:8px;height:8px;border-radius:50%;background:var(--gl);
+box-shadow:0 0 0 4px rgba(34,197,94,.16);animation:pulse 2.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.18);}50%{box-shadow:0 0 0 6px rgba(34,197,94,.06);}}
+
+/* 容器与区块 */
+.wrap{max-width:980px;margin:0 auto;padding:24px 22px 56px;}
+.section-h{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:48px 0 18px;
+padding-top:30px;border-top:1px solid var(--rule);}
+.section-h h2{font-family:var(--serif);font-size:26px;color:var(--ink);font-weight:700;letter-spacing:-.2px;line-height:1.2;}
+.section-sub{font-size:12.5px;color:var(--muted);font-weight:500;margin-top:5px;letter-spacing:.2px;}
+.hr-title{font-size:15px;color:var(--gd);font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:9px;}
+.hr-title::before{content:"";width:4px;height:16px;border-radius:3px;
+background:linear-gradient(var(--gl),var(--gd));display:inline-block;}
+
+/* 卡片 */
+.card{background:var(--gxx);border:1px solid var(--bd);border-radius:var(--radius);
+box-shadow:var(--shadow);transition:transform .28s cubic-bezier(.2,.7,.2,1),box-shadow .28s;}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+
+/* 按钮 */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+font-family:var(--ff);font-weight:600;font-size:13px;padding:10px 18px;border-radius:999px;
+border:1px solid var(--rule);cursor:pointer;transition:.2s;white-space:nowrap;background:transparent;color:var(--ink);}
+.btn:hover{background:var(--ink);color:#fff;}
+.btn-primary{background:var(--ink);color:#fff;border-color:var(--ink);}
+.btn-primary:hover{background:var(--g);border-color:var(--g);}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--rule);}
+.btn:disabled{opacity:.55;cursor:not-allowed;}
+
+/* 表单 */
+.field{width:100%;padding:14px 16px;border:1px solid var(--bd2);border-radius:var(--radius-sm);
+font-size:14px;font-family:inherit;color:var(--ink);background:#fff;outline:none;transition:.18s;}
+.field:focus{border-color:var(--g);box-shadow:0 0 0 4px rgba(22,163,74,.12);}
+.field::placeholder{color:#a8bbb0;}
+
+/* 标签 / 徽标 */
+.badge{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;font-size:12px;
+font-weight:700;line-height:1.5;letter-spacing:.3px;}
+.badge-soft{background:rgba(22,163,74,.1);color:var(--gd);}
+.badge-line{border:1px solid var(--bd2);color:var(--gd);}
+.badge-g{background:var(--g);color:#fff;}
+
+/* 表格 */
+.tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.tbl th{text-align:left;padding:13px 14px;color:var(--muted);font-weight:600;font-size:11.5px;
+letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--bd);}
+.tbl td{padding:13px 14px;border-bottom:1px solid rgba(20,124,58,.07);vertical-align:middle;}
+.tbl tbody tr{transition:.15s;}
+.tbl tbody tr:hover{background:rgba(22,163,74,.05);}
+.tbl a{color:var(--ink);font-weight:600;}
+.tbl a:hover{color:var(--gd);text-decoration:underline;}
+.rk{color:var(--gd);font-weight:800;width:46px;}
+
+/* 提示框 / 空态 */
+.box{background:var(--gxl);border:1px solid var(--bd);border-radius:var(--radius-sm);padding:16px 18px;
+font-size:14px;line-height:1.65;}
+.box.err{background:#fef2f2;border-color:#fecaca;color:#991b1b;}
+.empty{text-align:center;color:var(--muted);padding:46px 16px;font-size:13.5px;}
+.muted{color:var(--muted);font-size:12px;}
+.foot{text-align:center;color:var(--muted2);font-size:12px;margin-top:40px;letter-spacing:.4px;}
+
+/* 动效 */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadeArea{from{opacity:0}to{opacity:1}}
+.fade-in{animation:fadeIn .6s ease both;}
+.fade-up{animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) both;}
+.dy-line{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.5s ease forwards;}
+.dy-area{opacity:0;animation:fadeArea 1s ease .25s forwards;}
+
+/* 响应式 */
+@media (max-width:760px){
+.wrap{padding:16px 14px 38px;}
+.nav-in{padding:11px 14px;gap:10px;}
+.nav-status{display:none;}
+.nav-links a{padding:7px 12px;font-size:12.5px;}
+.section-h{flex-direction:column;align-items:flex-start;gap:8px;margin:30px 0 14px;}
+}
+@media (max-width:480px){
+.nav-links a.extra{display:none;}
+}
+.ed-masthead{position:relative;display:flex;align-items:baseline;justify-content:space-between;gap:18px;
+padding:34px 0 18px;border-bottom:1.2px solid var(--rule);}
+.ed-masthead .lt{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--ink-deep);
+letter-spacing:-.2px;}
+.ed-masthead .rt{font-size:10.5px;letter-spacing:2.2px;color:#666;text-align:right;
+text-transform:uppercase;}
+.ed-masthead .rt b{color:var(--accent-warm);font-weight:700;}
+/* 顶部口号 "ALL FOR ZZY"：衬线暖橘小字，张真源应援口号的杂志式呈现 */
+.ed-masthead .motto{position:absolute;left:0;top:10px;font-family:var(--serif);font-size:10.5px;
+letter-spacing:3.6px;color:var(--accent-warm);font-weight:600;text-transform:uppercase;
+display:flex;align-items:center;gap:10px;margin:0;line-height:1;}
+.ed-masthead .motto::before{content:"";display:inline-block;width:22px;height:1px;background:var(--accent-warm);}
+.ed-masthead .motto::after{content:"";display:inline-block;width:42px;height:1px;background:var(--accent-warm);opacity:.35;}
+/* masthead 右上角：白色蝴蝶剪影 + 颗粒光点（低饱和深绿，不抢主文字） */
+.ed-masthead .deco{position:absolute;right:0;top:0;width:148px;height:42px;pointer-events:none;}
+.ed-masthead .deco .bf{position:absolute;right:0;top:0;width:78px;color:var(--ink-mid);opacity:.20;}
+.ed-masthead .deco .sd{position:absolute;right:74px;top:10px;width:64px;color:var(--ink-mid);opacity:.55;}
+.ed-masthead .deco svg{display:block;fill:currentColor;}
+.ed-vol{font-size:11px;letter-spacing:2.6px;color:#888;margin-top:14px;text-transform:uppercase;}
+.ed-vol b{color:var(--ink);font-weight:700;}
+
+.ed-stat{position:relative;margin:48px 0 12px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;
+padding-bottom:18px;border-bottom:1px solid var(--rule2);}
+/* ed-stat 右上角：极小蝴蝶剪影，仅装饰 */
+.ed-stat .deco{position:absolute;right:0;top:0;width:36px;height:18px;
+color:var(--ink-mid);opacity:.16;pointer-events:none;}
+.ed-stat .deco svg{display:block;width:100%;height:auto;fill:currentColor;}
+.ed-stat .label{font-size:11px;letter-spacing:2.6px;color:var(--g);font-weight:700;
+margin-bottom:14px;text-transform:uppercase;}
+.ed-stat .num{font-family:var(--serif);font-size:clamp(56px,8vw,108px);font-weight:700;
+color:var(--ink);letter-spacing:-2px;line-height:.95;font-feature-settings:"tnum";}
+.ed-stat .num .raw{font-family:var(--ff);font-size:13px;color:#888;font-weight:500;
+margin-left:12px;letter-spacing:0;vertical-align:middle;}
+.ed-stat .sub{font-size:13px;color:#666;margin-top:14px;letter-spacing:.3px;}
+.ed-stat .meta{text-align:right;font-size:11px;letter-spacing:1.5px;color:#666;
+text-transform:uppercase;line-height:1.9;}
+.ed-stat .meta b{color:var(--g);font-weight:700;font-family:var(--serif);
+font-size:14px;letter-spacing:-.2px;text-transform:none;}
+
+.ed-rule{height:1px;background:var(--rule);margin:0 0 36px;opacity:.92;}
+
+.ed-charts{display:grid;grid-template-columns:1fr 1fr;gap:42px;}
+.ed-chart .h{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--ink);
+margin-bottom:6px;letter-spacing:-.1px;}
+.ed-chart .sub{font-size:10.5px;letter-spacing:1.8px;color:#888;margin-bottom:18px;
+text-transform:uppercase;}
+.ed-chart .frame{padding:10px 0 12px;border-bottom:.5px solid var(--rule);}
+
+.ed-pub{margin-top:36px;padding:18px 0;border-top:1px solid var(--rule2);border-bottom:1px solid var(--rule2);}
+.ed-pub .h{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;letter-spacing:-.1px;}
+.ed-pub .sub{font-size:10.5px;letter-spacing:1.8px;color:#888;margin-bottom:14px;text-transform:uppercase;}
+.ed-pub .frame{padding:6px 0 12px;}
+
+.ed-list{margin:0;padding:0;}
+.ed-list-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+margin:0 0 6px;padding-bottom:8px;border-bottom:1px solid var(--rule);}
+.ed-list-head .h{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-.1px;}
+.ed-list-head .meta{font-size:10.5px;letter-spacing:1.8px;color:#888;text-transform:uppercase;}
+.ed-list .row{display:grid;grid-template-columns:46px 1fr 120px 84px;gap:18px;
+align-items:baseline;padding:13px 0;border-bottom:.5px solid var(--rule2);
+transition:background .18s;}
+.ed-list .row:hover{background:rgba(22,163,94,.04);}
+.ed-list .no{font-family:var(--serif);font-size:13px;font-style:italic;color:#888;
+font-weight:500;letter-spacing:.5px;}
+.ed-list .title{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ink);
+letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+display:block;}
+.ed-list .title:hover{color:var(--g);}
+.ed-list .time{font-size:11.5px;color:#666;letter-spacing:.3px;font-feature-settings:"tnum";}
+.ed-list .nums{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--g);
+text-align:right;font-feature-settings:"tnum";}
+.ed-list-foot{padding:14px 0 0;font-size:10.5px;letter-spacing:1.8px;color:#888;text-align:center;}
+
+/* 作品缩略图矩阵（替代长文字列表，数量已并入块标题） */
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:11px;margin-top:14px;}
+.wt{position:relative;display:block;aspect-ratio:3/4;border-radius:13px;overflow:hidden;
+background:var(--gxl);border:1px solid var(--bd);transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s;}
+.wt:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.wt.miss{background:linear-gradient(135deg,var(--gl),var(--gd));}
+.wt img{width:100%;height:100%;object-fit:cover;display:block;}
+.wt .scrim{position:absolute;left:0;right:0;bottom:0;padding:22px 8px 7px;
+background:linear-gradient(transparent,rgba(10,61,36,.82));pointer-events:none;}
+.wt .lk{display:flex;align-items:center;gap:3px;color:#fff;font-family:var(--serif);
+font-weight:700;font-size:12.5px;font-feature-settings:"tnum";line-height:1;}
+.wt .lk svg{width:10px;height:10px;fill:#fff;opacity:.92;flex:none;}
+.wt .ti{margin-top:3px;font-size:10px;line-height:1.3;color:rgba(255,255,255,.85);
+display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.wt .mt-badge{position:absolute;left:7px;top:7px;z-index:2;background:var(--ink-deep);
+color:#fff;font-family:var(--serif);font-size:9px;font-weight:700;letter-spacing:.3px;
+padding:3px 7px;border-radius:20px;box-shadow:0 2px 6px rgba(10,61,36,.35);}
+.wt .mt-time{margin-top:3px;font-size:8.5px;line-height:1;color:rgba(255,255,255,.82);
+letter-spacing:.2px;font-feature-settings:"tnum";}
+
+/* 破百万节点已合并到作品缩略图标签（见 .wt .mt-badge） */
+
+.ed-topics{margin-top:8px;}
+.ed-topics-row{font-size:13.5px;color:var(--ink);line-height:2;}
+.ed-topics-row .tg{display:inline-block;margin:0 18px 8px 0;font-family:var(--serif);font-weight:600;}
+.ed-topics-row .tg:hover{color:var(--g);}
+.ed-topics-row .v{color:#999;font-family:var(--ff);font-size:12px;font-weight:500;
+margin-left:4px;letter-spacing:.3px;}
+
+.ed-export{margin-top:30px;text-align:center;}
+.ed-xlsx-btn{display:inline-block;padding:11px 22px;border:1.2px solid var(--bd2);
+border-radius:24px;color:var(--ink);font-family:var(--serif);font-size:13px;font-weight:600;
+letter-spacing:.5px;text-decoration:none;transition:background .18s,border-color .18s;}
+.ed-xlsx-btn:hover{background:var(--gxl);border-color:var(--gd);}
+
+.foot{margin-top:42px;padding-top:24px;border-top:.5px solid var(--rule2);
+text-align:center;font-size:10.5px;letter-spacing:2px;color:#888;text-transform:uppercase;}
+.foot b{color:var(--ink);font-weight:700;}
+/* footer 拼音标 + 应援拉丁 motto：蝴蝶意象 + 应援口号 */
+.foot .motto-row{font-family:var(--serif);font-size:13px;letter-spacing:5px;
+color:var(--ink-deep);font-weight:700;text-transform:uppercase;margin:0 0 6px;
+display:flex;align-items:center;justify-content:center;gap:12px;}
+.foot .motto-row::before,.foot .motto-row::after{content:"";display:inline-block;width:32px;height:1px;background:var(--ink-mid);opacity:.55;}
+.foot .latin{font-family:var(--serif);font-style:italic;color:var(--muted);
+letter-spacing:.5px;text-transform:none;font-size:11.5px;margin-top:10px;font-weight:400;}
+
+.chart-wrap{position:relative;background:transparent;border:0;border-radius:0;padding:0;}
+.chart-wrap svg circle.pt{transition:r .18s ease;cursor:pointer;}
+.chart-wrap svg g[data-i]:hover circle.pt{r:6;}
+.chart-wrap svg g[data-i]{cursor:pointer;}
+
+.dy-tip{position:absolute;pointer-events:none;z-index:9999;background:rgba(17,17,17,.96);color:#fff;
+padding:9px 12px;border-radius:6px;font-size:11.5px;line-height:1.6;max-width:260px;white-space:pre-line;
+box-shadow:0 8px 22px rgba(0,0,0,.22);transform:translate(-50%,-100%);font-family:var(--ff);}
+.dy-tip::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);
+border:5px solid transparent;border-top-color:rgba(17,17,17,.96);}
+
+@media (max-width:760px){
+.wrap{padding:18px 16px 42px;}
+.ed-stat{grid-template-columns:1fr;gap:14px;}
+.ed-stat .meta{text-align:left;}
+.ed-stat .num{font-size:54px;}
+.ed-charts{grid-template-columns:1fr;gap:28px;}
+.ed-list .row{grid-template-columns:38px 1fr 64px;gap:10px;}
+.ed-list .time{display:none;}
+.wall{grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px;}
+.ms-scale span{font-size:7px;}
+.ms-scale,.ms-bar{margin-left:14px;margin-right:14px;}
+.ed-pub{margin-top:28px;}
+.ed-masthead{flex-direction:column;gap:8px;align-items:flex-start;}
+.ed-masthead .rt{text-align:left;}
+.ed-list-head{flex-direction:column;align-items:flex-start;gap:4px;}
+}
+</style></head>
+<body>
+
+<nav class='nav'>
+  <div class='nav-in'>
+    <a class='brand' href='https://www.douyin.com/user/MS4wLjABAAAAOpX2NjhZ8eTZFkP6BeKiWOxQXo264vHMFU8Zngk6Nrh61qKZjDjJO5ZvnyoZKN_E' target='_blank' rel='noopener' title='在抖音打开 时代少年团-张真源 主页'>
+      <span class='logo'>张</span><span>时代少年团-张真源</span>
+    </a>
+    <div class='nav-links'>
+      <a href='/dashboard.html' data-nav='reload' class='active'>看板</a>
+      <a href='/fetch.html' data-nav='backend'>抓取账号</a>
+      <a href='/admin' data-nav='backend'>后台管理</a>
+    </div>
+    <div class='nav-status'><span class='dot-live'></span>最近更新 2026-08-16 23:55:55</div>
+  </div>
+</nav>
+<div class='wrap'>
+
+<div class='ed-masthead'>
+  <span class='motto'>ALL FOR ZZY</span>
+  <div class='lt'>时代少年团-张真源 · 抖音数据月刊</div>
+  <div class='rt'>抖音号 <b>29832527783</b><br>更新时间 2026-08-16 23:55:55</div>
+  <span class='deco' aria-hidden='true'>
+    <svg class='bf' viewBox='0 0 100 60'>
+      <path d='M 50 30 Q 30 8 14 16 Q 6 22 16 32 Q 34 38 50 32 Z'/>
+      <path d='M 50 30 Q 70 8 86 16 Q 94 22 84 32 Q 66 38 50 32 Z'/>
+      <path d='M 50 32 Q 36 42 24 50 Q 20 54 30 52 Q 42 48 50 36 Z'/>
+      <path d='M 50 32 Q 64 42 76 50 Q 80 54 70 52 Q 58 48 50 36 Z'/>
+      <ellipse cx='50' cy='32' rx='1.2' ry='5'/>
+    </svg>
+    <svg class='sd' viewBox='0 0 64 24'>
+      <circle cx='6' cy='6' r='1.2'/><circle cx='14' cy='14' r='.7'/>
+      <circle cx='22' cy='4' r='.9'/><circle cx='30' cy='18' r='.5'/>
+      <circle cx='38' cy='10' r='1'/><circle cx='46' cy='6' r='.6'/>
+      <circle cx='54' cy='16' r='.9'/><circle cx='58' cy='4' r='.5'/>
+    </svg>
+  </span>
+</div>
+<div class='ed-vol'>本期 <b>ISSUE № 038</b> · 自动每小时更新 · 监测第 17 小时</div>
+
+<div class='ed-stat'>
+  <span class='deco' aria-hidden='true'>
+    <svg viewBox='0 0 100 60'>
+      <path d='M 50 30 Q 32 10 16 18 Q 8 24 18 32 Q 35 38 50 32 Z'/>
+      <path d='M 50 30 Q 68 10 84 18 Q 92 24 82 32 Q 65 38 50 32 Z'/>
+      <path d='M 50 32 Q 38 42 26 50 Q 22 54 30 52 Q 42 48 50 36 Z'/>
+      <path d='M 50 32 Q 62 42 74 50 Q 78 54 70 52 Q 58 48 50 36 Z'/>
+    </svg>
+  </span>
+  <div>
+    <div class='label'>01 ──── FOLLOWERS · 粉丝</div>
+    <div class='num'>5,105,134<span class='raw'>总数 · 510.5万</span></div>
+    <div class='sub'>粉丝总数 · 监测每小时刷新一次</div>
+  </div>
+  <div class='meta'>
+    <div>近 1 小时 <b><b class='pos'>+846</b></b></div>
+    <div>监测期累计 <b><b class='pos'>+2,651</b></b></div>
+  </div>
+</div>
+
+<div class='ed-rule'></div>
+
+<div class='ed-stat'>
+  <span class='deco' aria-hidden='true'>
+    <svg viewBox='0 0 100 60'>
+      <path d='M 50 30 Q 32 10 16 18 Q 8 24 18 32 Q 35 38 50 32 Z'/>
+      <path d='M 50 30 Q 68 10 84 18 Q 92 24 82 32 Q 65 38 50 32 Z'/>
+      <path d='M 50 32 Q 38 42 26 50 Q 22 54 30 52 Q 42 48 50 36 Z'/>
+      <path d='M 50 32 Q 62 42 74 50 Q 78 54 70 52 Q 58 48 50 36 Z'/>
+    </svg>
+  </span>
+  <div>
+    <div class='label'>02 ──── TOTAL PRAISE · 累计获赞</div>
+    <div class='num'>113,232,968<span class='raw'>累计 · 1.13亿</span></div>
+    <div class='sub'>累计获赞总数</div>
+  </div>
+  <div class='meta'>
+    <div>近 1 小时 <b><b class='pos'>+2.4万</b></b></div>
+    <div>监测期累计 <b><b class='pos'>+6.1万</b></b></div>
+  </div>
+</div>
+
+<div class='ed-rule'></div>
+
+<div class='ed-charts'>
+  <div class='ed-chart'>
+    <div class='h'>粉丝增长曲线</div>
+    <div class='sub'>RELATIVE · 相对起始</div>
+    <div class='frame chart-wrap'><svg id="chart-fans" viewBox="0 0 560 240" preserveAspectRatio="xMidYMid meet" style="width:100%;height:240px"><line x1="56" x2="546" y1="193.6" y2="193.6" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="193.6" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">−2651</text><line x1="56" x2="546" y1="152.3" y2="152.3" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="152.3" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">−1325.50</text><line x1="56" x2="546" y1="111.0" y2="111.0" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="111.0" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">0</text><line x1="56" x2="546" y1="69.7" y2="69.7" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="69.7" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">+1325.50</text><line x1="56" x2="546" y1="28.4" y2="28.4" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="28.4" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">+2651</text><text x="56.0" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">06:51</text><text x="178.5" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">07:10</text><text x="301.0" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">07:14</text><text x="423.5" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">18:09</text><text x="546.0" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">23:55</text><line x1="56" x2="546" y1="111.0" y2="111.0" stroke="#15803d" stroke-width="1" stroke-opacity="0.35"/><path class="dy-area" d="M 56.0 111.0 L 178.5 110.7 L 301.0 110.8 L 423.5 54.8 L 546.0 28.4 L 546.0 206.0 L 56.0 206.0 Z" fill="#15803d" fill-opacity="0.10"/><path class="dy-line" d="M 56.0 111.0 L 178.5 110.7 L 301.0 110.8 L 423.5 54.8 L 546.0 28.4" fill="none" stroke="#15803d" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" pathLength="1"/><g data-i="0"><rect x="44.0" y="99.0" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="56.0" cy="111.0" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></g><g data-i="1"><rect x="166.5" y="98.7" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="178.5" cy="110.7" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></g><g data-i="2"><rect x="289.0" y="98.8" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="301.0" cy="110.8" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></g><g data-i="3"><rect x="411.5" y="42.8" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="423.5" cy="54.8" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></g><g data-i="4"><rect x="534.0" y="16.4" width="24" height="24" fill="transparent" pointer-events="all"/><circle cx="546.0" cy="28.4" r="9" fill="#15803d" fill-opacity="0.12" pointer-events="none"/><circle class="pt" cx="546.0" cy="28.4" r="4.5" fill="#15803d" stroke="#fff" stroke-width="2" pointer-events="none"/></g></svg></div>
+  </div>
+  <div class='ed-chart'>
+    <div class='h'>获赞增长曲线</div>
+    <div class='sub'>RELATIVE · 相对起始</div>
+    <div class='frame chart-wrap'><svg id="chart-liked" viewBox="0 0 560 240" preserveAspectRatio="xMidYMid meet" style="width:100%;height:240px"><line x1="56" x2="546" y1="193.6" y2="193.6" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="193.6" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">−6.1万</text><line x1="56" x2="546" y1="152.3" y2="152.3" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="152.3" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">−3.0万</text><line x1="56" x2="546" y1="111.0" y2="111.0" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="111.0" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">0</text><line x1="56" x2="546" y1="69.7" y2="69.7" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="69.7" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">+3.0万</text><line x1="56" x2="546" y1="28.4" y2="28.4" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="28.4" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">+6.1万</text><text x="56.0" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">06:51</text><text x="178.5" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">07:10</text><text x="301.0" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">07:14</text><text x="423.5" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">18:09</text><text x="546.0" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">23:55</text><line x1="56" x2="546" y1="111.0" y2="111.0" stroke="#22c55e" stroke-width="1" stroke-opacity="0.35"/><path class="dy-area" d="M 56.0 111.0 L 178.5 110.7 L 301.0 110.7 L 423.5 61.0 L 546.0 28.4 L 546.0 206.0 L 56.0 206.0 Z" fill="#22c55e" fill-opacity="0.10"/><path class="dy-line" d="M 56.0 111.0 L 178.5 110.7 L 301.0 110.7 L 423.5 61.0 L 546.0 28.4" fill="none" stroke="#22c55e" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" pathLength="1"/><g data-i="0"><rect x="44.0" y="99.0" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="56.0" cy="111.0" r="3" fill="#fff" stroke="#22c55e" stroke-width="2" pointer-events="none"/></g><g data-i="1"><rect x="166.5" y="98.7" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="178.5" cy="110.7" r="3" fill="#fff" stroke="#22c55e" stroke-width="2" pointer-events="none"/></g><g data-i="2"><rect x="289.0" y="98.7" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="301.0" cy="110.7" r="3" fill="#fff" stroke="#22c55e" stroke-width="2" pointer-events="none"/></g><g data-i="3"><rect x="411.5" y="49.0" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="423.5" cy="61.0" r="3" fill="#fff" stroke="#22c55e" stroke-width="2" pointer-events="none"/></g><g data-i="4"><rect x="534.0" y="16.4" width="24" height="24" fill="transparent" pointer-events="all"/><circle cx="546.0" cy="28.4" r="9" fill="#22c55e" fill-opacity="0.12" pointer-events="none"/><circle class="pt" cx="546.0" cy="28.4" r="4.5" fill="#22c55e" stroke="#fff" stroke-width="2" pointer-events="none"/></g></svg></div>
+  </div>
+</div>
+
+<div class='ed-pub'>
+  <div class='h'>作品发布时间 × 点赞</div>
+  <div class='sub'>LOG SCALE · 对数坐标 · 点击数据点在抖音打开原作品</div>
+  <div class='frame chart-wrap'><svg id="chart-pub" viewBox="0 0 1140 240" preserveAspectRatio="xMidYMid meet" style="width:100%;height:240px"><line x1="56" x2="1126" y1="206.0" y2="206.0" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="206.0" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">10.0万</text><line x1="56" x2="1126" y1="111.0" y2="111.0" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="111.0" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">100.0万</text><line x1="56" x2="1126" y1="16.0" y2="16.0" stroke="#d8efe0" stroke-dasharray="2,3"/><text x="49.0" y="16.0" text-anchor="end" font-size="10" fill="#6b9080" dominant-baseline="middle">1000.0万</text><text x="56.0" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">12-10</text><text x="200.6" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">12-17</text><text x="345.2" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">01-06</text><text x="489.8" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">01-28</text><text x="634.4" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">03-03</text><text x="779.0" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">04-01</text><text x="923.6" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">06-05</text><text x="1068.2" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">07-30</text><text x="1126.0" y="224.0" text-anchor="middle" font-size="10" fill="#6b9080">08-06</text><path class="dy-area" d="M 56.0 84.7 L 84.9 85.0 L 113.8 79.5 L 142.8 79.4 L 171.7 88.1 L 200.6 60.9 L 229.5 89.5 L 258.4 81.4 L 287.4 91.2 L 316.3 87.3 L 345.2 67.5 L 374.1 104.1 L 403.0 90.6 L 431.9 83.8 L 460.9 94.2 L 489.8 92.8 L 518.7 35.5 L 547.6 65.6 L 576.5 90.3 L 605.5 81.2 L 634.4 75.9 L 663.3 73.2 L 692.2 80.6 L 721.1 84.9 L 750.1 91.7 L 779.0 88.6 L 807.9 92.2 L 836.8 104.5 L 865.7 92.6 L 894.6 70.1 L 923.6 60.0 L 952.5 96.3 L 981.4 82.2 L 1010.3 103.9 L 1039.2 79.5 L 1068.2 95.5 L 1097.1 113.4 L 1126.0 116.2 L 1126.0 206.0 L 56.0 206.0 Z" fill="#15803d" fill-opacity="0.10"/><path class="dy-line" d="M 56.0 84.7 L 84.9 85.0 L 113.8 79.5 L 142.8 79.4 L 171.7 88.1 L 200.6 60.9 L 229.5 89.5 L 258.4 81.4 L 287.4 91.2 L 316.3 87.3 L 345.2 67.5 L 374.1 104.1 L 403.0 90.6 L 431.9 83.8 L 460.9 94.2 L 489.8 92.8 L 518.7 35.5 L 547.6 65.6 L 576.5 90.3 L 605.5 81.2 L 634.4 75.9 L 663.3 73.2 L 692.2 80.6 L 721.1 84.9 L 750.1 91.7 L 779.0 88.6 L 807.9 92.2 L 836.8 104.5 L 865.7 92.6 L 894.6 70.1 L 923.6 60.0 L 952.5 96.3 L 981.4 82.2 L 1010.3 103.9 L 1039.2 79.5 L 1068.2 95.5 L 1097.1 113.4 L 1126.0 116.2" fill="none" stroke="#15803d" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" pathLength="1"/><g data-i="0" data-href="https://www.douyin.com/video/7581818954323561765"><a href="https://www.douyin.com/video/7581818954323561765" target="_blank" rel="noopener"><rect x="44.0" y="72.7" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="56.0" cy="84.7" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="1" data-href="https://www.douyin.com/video/7581909259269606693"><a href="https://www.douyin.com/video/7581909259269606693" target="_blank" rel="noopener"><rect x="72.9" y="73.0" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="84.9" cy="85.0" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="2" data-href="https://www.douyin.com/video/7582522415532576037"><a href="https://www.douyin.com/video/7582522415532576037" target="_blank" rel="noopener"><rect x="101.8" y="67.5" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="113.8" cy="79.5" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="3" data-href="https://www.douyin.com/video/7583373969287662885"><a href="https://www.douyin.com/video/7583373969287662885" target="_blank" rel="noopener"><rect x="130.8" y="67.4" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="142.8" cy="79.4" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="4" data-href="https://www.douyin.com/video/7583732888081222949"><a href="https://www.douyin.com/video/7583732888081222949" target="_blank" rel="noopener"><rect x="159.7" y="76.1" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="171.7" cy="88.1" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="5" data-href="https://www.douyin.com/video/7584491307214769467"><a href="https://www.douyin.com/video/7584491307214769467" target="_blank" rel="noopener"><rect x="188.6" y="48.9" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="200.6" cy="60.9" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="6" data-href="https://www.douyin.com/video/7584847791949008165"><a href="https://www.douyin.com/video/7584847791949008165" target="_blank" rel="noopener"><rect x="217.5" y="77.5" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="229.5" cy="89.5" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="7" data-href="https://www.douyin.com/video/7586558124971412785"><a href="https://www.douyin.com/video/7586558124971412785" target="_blank" rel="noopener"><rect x="246.4" y="69.4" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="258.4" cy="81.4" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="8" data-href="https://www.douyin.com/video/7587105015764962603"><a href="https://www.douyin.com/video/7587105015764962603" target="_blank" rel="noopener"><rect x="275.4" y="79.2" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="287.4" cy="91.2" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="9" data-href="https://www.douyin.com/video/7590074877877439759"><a href="https://www.douyin.com/video/7590074877877439759" target="_blank" rel="noopener"><rect x="304.3" y="75.3" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="316.3" cy="87.3" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="10" data-href="https://www.douyin.com/video/7592176367177977140"><a href="https://www.douyin.com/video/7592176367177977140" target="_blank" rel="noopener"><rect x="333.2" y="55.5" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="345.2" cy="67.5" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="11" data-href="https://www.douyin.com/video/7594320469919059227"><a href="https://www.douyin.com/video/7594320469919059227" target="_blank" rel="noopener"><rect x="362.1" y="92.1" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="374.1" cy="104.1" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="12" data-href="https://www.douyin.com/video/7596717995863395590"><a href="https://www.douyin.com/video/7596717995863395590" target="_blank" rel="noopener"><rect x="391.0" y="78.6" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="403.0" cy="90.6" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="13" data-href="https://www.douyin.com/video/7598609816981916974"><a href="https://www.douyin.com/video/7598609816981916974" target="_blank" rel="noopener"><rect x="419.9" y="71.8" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="431.9" cy="83.8" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="14" data-href="https://www.douyin.com/video/7599188922664521000"><a href="https://www.douyin.com/video/7599188922664521000" target="_blank" rel="noopener"><rect x="448.9" y="82.2" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="460.9" cy="94.2" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="15" data-href="https://www.douyin.com/video/7600061826395343936"><a href="https://www.douyin.com/video/7600061826395343936" target="_blank" rel="noopener"><rect x="477.8" y="80.8" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="489.8" cy="92.8" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="16" data-href="https://www.douyin.com/video/7605880193844305634"><a href="https://www.douyin.com/video/7605880193844305634" target="_blank" rel="noopener"><rect x="506.7" y="23.5" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="518.7" cy="35.5" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="17" data-href="https://www.douyin.com/video/7606693025544475258"><a href="https://www.douyin.com/video/7606693025544475258" target="_blank" rel="noopener"><rect x="535.6" y="53.6" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="547.6" cy="65.6" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="18" data-href="https://www.douyin.com/video/7608480068213411091"><a href="https://www.douyin.com/video/7608480068213411091" target="_blank" rel="noopener"><rect x="564.5" y="78.3" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="576.5" cy="90.3" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="19" data-href="https://www.douyin.com/video/7609282706312023350"><a href="https://www.douyin.com/video/7609282706312023350" target="_blank" rel="noopener"><rect x="593.5" y="69.2" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="605.5" cy="81.2" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="20" data-href="https://www.douyin.com/video/7612992306027799759"><a href="https://www.douyin.com/video/7612992306027799759" target="_blank" rel="noopener"><rect x="622.4" y="63.9" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="634.4" cy="75.9" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="21" data-href="https://www.douyin.com/video/7614451346897047168"><a href="https://www.douyin.com/video/7614451346897047168" target="_blank" rel="noopener"><rect x="651.3" y="61.2" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="663.3" cy="73.2" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="22" data-href="https://www.douyin.com/video/7618202332476712293"><a href="https://www.douyin.com/video/7618202332476712293" target="_blank" rel="noopener"><rect x="680.2" y="68.6" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="692.2" cy="80.6" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="23" data-href="https://www.douyin.com/video/7619669378891533622"><a href="https://www.douyin.com/video/7619669378891533622" target="_blank" rel="noopener"><rect x="709.1" y="72.9" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="721.1" cy="84.9" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="24" data-href="https://www.douyin.com/video/7620780972514221539"><a href="https://www.douyin.com/video/7620780972514221539" target="_blank" rel="noopener"><rect x="738.1" y="79.7" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="750.1" cy="91.7" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="25" data-href="https://www.douyin.com/video/7623631542166936040"><a href="https://www.douyin.com/video/7623631542166936040" target="_blank" rel="noopener"><rect x="767.0" y="76.6" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="779.0" cy="88.6" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="26" data-href="https://www.douyin.com/video/7628850339080865189"><a href="https://www.douyin.com/video/7628850339080865189" target="_blank" rel="noopener"><rect x="795.9" y="80.2" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="807.9" cy="92.2" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="27" data-href="https://www.douyin.com/video/7629016381047983370"><a href="https://www.douyin.com/video/7629016381047983370" target="_blank" rel="noopener"><rect x="824.8" y="92.5" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="836.8" cy="104.5" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="28" data-href="https://www.douyin.com/video/7635543984551747813"><a href="https://www.douyin.com/video/7635543984551747813" target="_blank" rel="noopener"><rect x="853.7" y="80.6" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="865.7" cy="92.6" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="29" data-href="https://www.douyin.com/video/7642738030188660288"><a href="https://www.douyin.com/video/7642738030188660288" target="_blank" rel="noopener"><rect x="882.6" y="58.1" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="894.6" cy="70.1" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="30" data-href="https://www.douyin.com/video/7647523465700919744"><a href="https://www.douyin.com/video/7647523465700919744" target="_blank" rel="noopener"><rect x="911.6" y="48.0" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="923.6" cy="60.0" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="31" data-href="https://www.douyin.com/video/7650924745144307898"><a href="https://www.douyin.com/video/7650924745144307898" target="_blank" rel="noopener"><rect x="940.5" y="84.3" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="952.5" cy="96.3" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="32" data-href="https://www.douyin.com/video/7653071628145855790"><a href="https://www.douyin.com/video/7653071628145855790" target="_blank" rel="noopener"><rect x="969.4" y="70.2" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="981.4" cy="82.2" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="33" data-href="https://www.douyin.com/video/7656859519896603967"><a href="https://www.douyin.com/video/7656859519896603967" target="_blank" rel="noopener"><rect x="998.3" y="91.9" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="1010.3" cy="103.9" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="34" data-href="https://www.douyin.com/video/7663071838113088064"><a href="https://www.douyin.com/video/7663071838113088064" target="_blank" rel="noopener"><rect x="1027.2" y="67.5" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="1039.2" cy="79.5" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="35" data-href="https://www.douyin.com/video/7668238193742286757"><a href="https://www.douyin.com/video/7668238193742286757" target="_blank" rel="noopener"><rect x="1056.2" y="83.5" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="1068.2" cy="95.5" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="36" data-href="https://www.douyin.com/video/7670005373922823451"><a href="https://www.douyin.com/video/7670005373922823451" target="_blank" rel="noopener"><rect x="1085.1" y="101.4" width="24" height="24" fill="transparent" pointer-events="all"/><circle class="pt" cx="1097.1" cy="113.4" r="3" fill="#fff" stroke="#15803d" stroke-width="2" pointer-events="none"/></a></g><g data-i="37" data-href="https://www.douyin.com/video/7670750736154950641"><a href="https://www.douyin.com/video/7670750736154950641" target="_blank" rel="noopener"><rect x="1114.0" y="104.2" width="24" height="24" fill="transparent" pointer-events="all"/><circle cx="1126.0" cy="116.2" r="9" fill="#15803d" fill-opacity="0.12" pointer-events="none"/><circle class="pt" cx="1126.0" cy="116.2" r="4.5" fill="#15803d" stroke="#fff" stroke-width="2" pointer-events="none"/></a></g></svg></div>
+</div>
+
+<div class='ed-wall'>
+  <div class='ed-list-head'>
+    <span class='h'>全部作品 · 共 38 件</span>
+    <span class='meta'>点击缩略图打开抖音原作品</span>
+  </div>
+  <div class='wall'>
+    
+<a class='wt' href='https://www.douyin.com/video/7670750736154950641' target='_blank' rel='noopener' title='无名氏💍 #巡演日记 #活人感一夏 #张真源无名氏'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oYdU5ADjIJFEAD6jfBAgQaAFJfnmbIksyBH7Oe~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=Vsbno27lfH%2BLz0tcSuBHVRX43Wg%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>88.2万</div>
+    <div class='ti'>无名氏💍 #巡演日记 #活人感一夏 #张真源无名氏</div>
+    
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7670005373922823451' target='_blank' rel='noopener' title='我只是一个无名氏💍 #巡演日记  #活人感一夏 #张真源无名氏'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/5122d876a5b54a60af2703a51b42ad8e~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=ScDvrGMup8afVV8tP4XMA1hE6fQ%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>94.4万</div>
+    <div class='ti'>我只是一个无名氏💍 #巡演日记  #活人感一夏 #张真源无名氏</div>
+    
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7668238193742286757' target='_blank' rel='noopener' title='找找感觉 #活人感一夏 #星奇摇  #白衬衫帅哥'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/ok1BEr3AABiGHwAAODKEfig3cEeKAIaaeYNakA~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=sa1dW1Ey9cheyttsj5EGUdvm5fc%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>145.6万</div>
+    <div class='ti'>找找感觉 #活人感一夏 #星奇摇  #白衬衫帅哥</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7663071838113088064' target='_blank' rel='noopener' title='ggez ez✌️ #活人感一夏 #ggez'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/oQIzBB91YlrykzXaXAIjYAisiPQPEAP2MiAxA~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=Ok%2FEDS%2FnS0F1B8h4U8%2BfO5MPAMg%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 2 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>214.7万</div>
+    <div class='ti'>ggez ez✌️ #活人感一夏 #ggez</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7656859519896603967' target='_blank' rel='noopener' title='你把真心上了锁 '>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/d67eb79b75d341829ff77eb5decfc16a~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=RmQV5NasdoO6j4fMduQjsJ9KgKI%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>118.7万</div>
+    <div class='ti'>你把真心上了锁 </div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7653071628145855790' target='_blank' rel='noopener' title='赶来建设一下✌️ #张真源进行曲舞蹈挑战 #端午安康  #现拍现发 #帅哥来了'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/94979dab99df469f9fb5cba7dac5b2ff~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=lIyfjf3os7A8LvhW9lJ0BQc6IlI%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 2 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>200.8万</div>
+    <div class='ti'>赶来建设一下✌️ #张真源进行曲舞蹈挑战 #端午安康  #现拍现发 #帅哥来了</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7650924745144307898' target='_blank' rel='noopener' title='喜欢一切有生命力的事物☀️ #喜欢你 #umbrella'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-p-0015c000-ce/oQiiYbdik4iiJSaAEakMEPPQyvIBG2BttlPzA~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=hUyQSQ1sHFYIsp8Cv27jmCz6ssU%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>142.8万</div>
+    <div class='ti'>喜欢一切有生命力的事物☀️ #喜欢你 #umbrella</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7647523465700919744' target='_blank' rel='noopener' title='伸手不打饭撒人😁 #猜猜是谁想拍  #帅哥合照 #反转'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-p-0015/oItI8AMQedoJhW7FU2fnyDOBgEHhDkKI3netQw~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=IXL4GHpBKMNFa13Z7pyK2Ny8q64%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 3 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>344.1万</div>
+    <div class='ti'>伸手不打饭撒人😁 #猜猜是谁想拍  #帅哥合照 #反转</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7642738030188660288' target='_blank' rel='noopener' title='夜晚适合创作😉 #万物告白手册 #baby #帅哥营业'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-p-0015/osNPfABCXd0EbieR1GpxnBnAwEDQB94IKRxDiO~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=nSRswysoClz%2BHeaosiAuoxkFK%2Bg%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 2 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>269.5万</div>
+    <div class='ti'>夜晚适合创作😉 #万物告白手册 #baby #帅哥营业</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7635543984551747813' target='_blank' rel='noopener' title='put your hands up🙌🏻 #巡演日记 #星动营业中  #不小心帅到'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oE92lzNiAr9RAIvE9CipA5DBwko1AEGsf3eAK2~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=HDzVqe8pTY0F3xjaJphFjictFDE%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>156.1万</div>
+    <div class='ti'>put your hands up🙌🏻 #巡演日记 #星动营业中  #不小心帅到</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7629016381047983370' target='_blank' rel='noopener' title='生日快乐💚23岁平安健康！ #星动纪念日  #张真源  #生日快乐 #酷酷的 #'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/5215433405924162b100bb11566d5f86~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=hktEi70etXYHh%2B5DKsqRwmmy9tU%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>117.2万</div>
+    <div class='ti'>生日快乐💚23岁平安健康！ #星动纪念日  #张真源  #生日快乐 #酷酷的 #</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7628850339080865189' target='_blank' rel='noopener' title='22岁最后一天✌️✌️ #金丝眼镜杀 #抖抖好生活 #星遇好春光  #变装 #真'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/ooKAEEAFiIA5G9AwOYA3J7Qx8YH2DfyCovkpnf~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=3JIuoQoniGwQK6HEgD1fft9p5Ik%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>157.8万</div>
+    <div class='ti'>22岁最后一天✌️✌️ #金丝眼镜杀 #抖抖好生活 #星遇好春光  #变装 #真</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7623631542166936040' target='_blank' rel='noopener' title='复仇摇跳给你们 #抖抖好生活 #星遇好春光 #复仇摇 #快醒醒别睡了 #愚人节'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-p-0015/ow4C0enrBK2tI1sDLkA2HIQGZA90M7FEUfe4Pe~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=TA8cIMiRbrET7vLFFDTbE29B7ao%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>172.2万</div>
+    <div class='ti'>复仇摇跳给你们 #抖抖好生活 #星遇好春光 #复仇摇 #快醒醒别睡了 #愚人节</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7620780972514221539' target='_blank' rel='noopener' title='你的答案是🎤 #星动营业中 #星动音乐电台 #小半 #原相机'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/ogp5ASfDNIqp9MpAx5gCGwEnECeAVEPAFAAqQg~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=eRSjv8RRbUFQxag6AZNRaAWh1vc%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>159.8万</div>
+    <div class='ti'>你的答案是🎤 #星动营业中 #星动音乐电台 #小半 #原相机</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7619669378891533622' target='_blank' rel='noopener' title='今天有月光吗☁️ #星动营业中 #星动音乐电台 #一样的月光 #氛围感'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/dacc5bd4849b40be9af435d6c390473e~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=Dn%2FaRDZf1Bw%2FGFJeHjczmCiGEew%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>188.4万</div>
+    <div class='ti'>今天有月光吗☁️ #星动营业中 #星动音乐电台 #一样的月光 #氛围感</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7618202332476712293' target='_blank' rel='noopener' title='手里最后一条视频✌️ #星动营业中 #星光璀璨图鉴 #nobatidao #这是'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oUSSqAAOpCE3TJT5EfFEwqDoAuA95hAIERfzeU~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=Uqsd0WbE99zGYyX%2F%2BBmTu%2B485UM%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 2 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>209.0万</div>
+    <div class='ti'>手里最后一条视频✌️ #星动营业中 #星光璀璨图鉴 #nobatidao #这是</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7614451346897047168' target='_blank' rel='noopener' title='为什么是第三个吻痕🤔 #新年有礼了 #小爱吻痕舞 #第三个吻痕 #有求必应'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c001/okAKQ9A2AMiUEHKAvPyjpQiUI9rPaaCSAiBI3~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=dm%2FlBburs5LIkj4TIBUEQ10CySs%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 2 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>250.0万</div>
+    <div class='ti'>为什么是第三个吻痕🤔 #新年有礼了 #小爱吻痕舞 #第三个吻痕 #有求必应</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7612992306027799759' target='_blank' rel='noopener' title='冷漠一下 #新年有礼了 #和我一起闹元宵 #纳斯达克摇2'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-p-0015/oQemfT6CEvAYAF3CiAaENAByTB1TCLDrBICf7r~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=h2hVnb1luo67abjPaVAlmBsUeOA%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 2 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>234.0万</div>
+    <div class='ti'>冷漠一下 #新年有礼了 #和我一起闹元宵 #纳斯达克摇2</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7609282706312023350' target='_blank' rel='noopener' title='锁住你的爱🔒 #新年有礼了 #我的节日仪式感 #爱你老己 #锁rnb版'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/03bac71d32554cf5a5fa8c3ba488c6c4~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=gKYMxHTsr0KzyL5Sv2cjw%2BKb5fI%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 2 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>206.0万</div>
+    <div class='ti'>锁住你的爱🔒 #新年有礼了 #我的节日仪式感 #爱你老己 #锁rnb版</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7608480068213411091' target='_blank' rel='noopener' title='闯入你心里面🫰 #新年有礼了 #我的节日仪式感#米糕摇  #可甜可盐'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/1d651c0f3dc1429eba47b6ab617364b3~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=jMe7wF8%2Brs%2Fn%2BdiWQs5%2Fx4V2OlY%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651539BAD46F6F6EC899B57B3' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>165.0万</div>
+    <div class='ti'>闯入你心里面🫰 #新年有礼了 #我的节日仪式感#米糕摇  #可甜可盐</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7606693025544475258' target='_blank' rel='noopener' title='送给你们💌 #新年有礼了 #晒晒我的春节日常 #这才是猛男该跳的舞蹈 #纳斯达克'>
+  <img src='https://p9-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oEEf7AGnIJMe4ARCBbu68fHIAUrLQBTnJggAAP~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=O0v9HPSqpLz1sSCBtu8L2Zj3OWI%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 3 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>300.3万</div>
+    <div class='ti'>送给你们💌 #新年有礼了 #晒晒我的春节日常 #这才是猛男该跳的舞蹈 #纳斯达克</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7605880193844305634' target='_blank' rel='noopener' title='震撼首cha👏🏻 @范丞丞 @白鹿my @宋雨琦_i-dle @李昀锐Lin  '>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/o4NsAIi8OQF21DBAijAYigawrACAtI6PBEPON~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=H42oaJDj%2Fi5vXQz5NZzSJG0XgGM%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 6 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>623.4万</div>
+    <div class='ti'>震撼首cha👏🏻 @范丞丞 @白鹿my @宋雨琦_i-dle @李昀锐Lin  </div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7600061826395343936' target='_blank' rel='noopener' title='sly全新版本🪞 #张真源碎镜摇 #抖抖好生活 #星趣研究所'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c001/oYoYAAfAgH2AgfvALZXAfXr4pfftRvHxjQE4Tk~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=p%2FzPG8pI%2BRJQ%2Ftu5%2B2j%2FlOm%2BJCo%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>155.4万</div>
+    <div class='ti'>sly全新版本🪞 #张真源碎镜摇 #抖抖好生活 #星趣研究所</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7599188922664521000' target='_blank' rel='noopener' title='一直都还蛮喜欢的一首歌，今天终于唱给大家听了❤️ #星动营业中 #星动音乐电台 '>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/128b2a89be654dc18e746d9d0e25ec46~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=XEcS1p3ERfahCfeKb9RVmAAHeeU%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>150.2万</div>
+    <div class='ti'>一直都还蛮喜欢的一首歌，今天终于唱给大家听了❤️ #星动营业中 #星动音乐电台 </div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7598609816981916974' target='_blank' rel='noopener' title='big guy💪🏻 学习了下运镜🉑 #抖抖好生活 #星趣研究所 #我的身材很曼妙'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/904a4068bb0246a3aac4614abaf9afe7~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=7fbjo20eVRSMSQ1%2FmqTS8g8kN7U%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>193.2万</div>
+    <div class='ti'>big guy💪🏻 学习了下运镜🉑 #抖抖好生活 #星趣研究所 #我的身材很曼妙</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7596717995863395590' target='_blank' rel='noopener' title='灿烂全因你的颜色～🎨 #星动营业中 #星动音乐电台 #停车场第一深情'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/71b2f59623b84586b543013b0004fdd1~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=tgceegEJ6NGDLaQTYuiPfSrNPLQ%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>163.8万</div>
+    <div class='ti'>灿烂全因你的颜色～🎨 #星动营业中 #星动音乐电台 #停车场第一深情</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7594320469919059227' target='_blank' rel='noopener' title='< 𝐒𝐋𝐘 > MV #星动营业中 #星动音乐电台 
+好像很难用一个词来概括现在'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/c5cb08058f5247919fb100737c329a2c~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=nRaCqFnADG47nXznwlKlHPr1SbU%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>118.3万</div>
+    <div class='ti'>< 𝐒𝐋𝐘 > MV #星动营业中 #星动音乐电台 
+好像很难用一个词来概括现在</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7592176367177977140' target='_blank' rel='noopener' title='接接接接接力摇来了🫘 #抖音热门舞蹈计划 #接力摇 #不用AI'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/fc86f59a8eee42c48f70a774bb555cff~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=X72wEOVm01S5H5aZ3Kp4s%2Bcy734%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 2 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>286.9万</div>
+    <div class='ti'>接接接接接力摇来了🫘 #抖音热门舞蹈计划 #接力摇 #不用AI</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7590074877877439759' target='_blank' rel='noopener' title='把新年愿望留给你们❤️ #新年有礼了 #抖音好好跨年季 #以后多见面 #晚安'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/6610a3c230b24acb82d48896cd713076~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=sZrQaqo86YZSOeFs73FWQBI3lRQ%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>177.8万</div>
+    <div class='ti'>把新年愿望留给你们❤️ #新年有礼了 #抖音好好跨年季 #以后多见面 #晚安</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7587105015764962603' target='_blank' rel='noopener' title='所以是哪年的娃娃脸😜 #抖抖好生活 #星趣研究所 #眼镜杀'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/5c997701339b4d258daeeb1e48f69c11~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=v2wpiGMBgT%2FdE63Z3aOVy%2BG04es%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>161.5万</div>
+    <div class='ti'>所以是哪年的娃娃脸😜 #抖抖好生活 #星趣研究所 #眼镜杀</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7586558124971412785' target='_blank' rel='noopener' title='vai🕺🏻 #抖抖好生活 #星趣研究所 #浅浅一跳 #氛围感帅哥'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-p-0015c000-ce/oAFSeE0IDuz3NC3dwEfoAVAKfFx91pEAuoK9dI~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=QT1Z6cUHFK%2F51UoB68UfxSfaCtk%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 2 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>204.8万</div>
+    <div class='ti'>vai🕺🏻 #抖抖好生活 #星趣研究所 #浅浅一跳 #氛围感帅哥</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7584847791949008165' target='_blank' rel='noopener' title='鸡蛋啊～ #星动营业中 #星光璀璨图鉴 #帅气出场 #你的理想型'>
+  <img src='https://p9-pc-sign.douyinpic.com/tos-cn-p-0015c000-ce/o46iAaIN7qAbIyMBBEUp1npvPjbILF2BLCaPi~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=eZg87R2LmA%2B%2FYHZsdoxxXR7eLkw%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>168.2万</div>
+    <div class='ti'>鸡蛋啊～ #星动营业中 #星光璀璨图鉴 #帅气出场 #你的理想型</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7584491307214769467' target='_blank' rel='noopener' title='感觉把我2025年的甜度都用完了🥵 #星动营业中 #星光璀璨图鉴 #甜度超标 #'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/o8AfMiNUAt2evB7AI6hEt4AuB9iAo0RnwACBEY~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=en6YKP5b%2BRzUYUJ7qStJkXZ0uug%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 3 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>336.8万</div>
+    <div class='ti'>感觉把我2025年的甜度都用完了🥵 #星动营业中 #星光璀璨图鉴 #甜度超标 #</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7583732888081222949' target='_blank' rel='noopener' title='轻松帅一下✌🏻 #星动营业中 #星光璀璨图鉴 #机车帅哥'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oU2TEyUPwTw9AIEPpAQBRbFOAvEentf1CVAQDA~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=JXexzNG%2BM%2FLIShN94juWIBFHQQw%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>174.3万</div>
+    <div class='ti'>轻松帅一下✌🏻 #星动营业中 #星光璀璨图鉴 #机车帅哥</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7583373969287662885' target='_blank' rel='noopener' title='send it to my girls #抖音热门舞蹈计划 #性感帅哥'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/osEvApYC1L6EAsF9R1IA6tAnGjwfkLe9AAPEoD~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=pbrd%2FtBj9dv%2FRLdP%2BMij0nJlpng%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 2 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>215.1万</div>
+    <div class='ti'>send it to my girls #抖音热门舞蹈计划 #性感帅哥</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7582522415532576037' target='_blank' rel='noopener' title='穿上一身帅气西装👔'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oIA6e0AnnAIiAi3hEAIAO7QfF0uwJiEBA2oCbU~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=9ghR2Y3xXOXwYxfkt0wUUs0oS5s%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 2 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>214.6万</div>
+    <div class='ti'>穿上一身帅气西装👔</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7581909259269606693' target='_blank' rel='noopener' title='赶个末班车🙌🏻'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oE4AOXAAiBaAhl4TBMxKa7WiEAqAldtDPqIAP~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=1WEhJsQm8f7RUsvHo27eHU8XOQk%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>187.9万</div>
+    <div class='ti'>赶个末班车🙌🏻</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+<a class='wt' href='https://www.douyin.com/video/7581818954323561765' target='_blank' rel='noopener' title='久等了先转个场🎲'>
+  <img src='https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oQwAIML2iiUICA4qbgawPzCIATPAAiTExBBBA~tplv-dy-cropcenter:323:430.jpeg?lk3s=138a59ce&x-expires=2102191200&x-signature=UVW9Hm6CBW5OZ5HOG2WXbaIyQHg%3D&from=327834062&s=PackSourceEnum_PUBLISH&se=true&sh=323_430&sc=cover&biz_tag=pcweb_cover&l=202608160651555B5B65CB38682043AD74' alt='' loading='lazy' onerror="this.style.display='none';this.parentNode.classList.add('miss')">
+  <span class='mt-badge'>已破 1 百万</span>
+  <div class='scrim'>
+    <div class='lk'><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 21s-7.5-4.9-10-9.2C.4 8.3 2 4.8 5.3 4.8c2 0 3.3 1.1 4.2 2.4 C10.4 5.9 11.7 4.8 13.7 4.8c3.3 0 4.9 3.5 3.3 6.9C19.5 16.1 12 21 12 21z'/></svg>189.2万</div>
+    <div class='ti'>久等了先转个场🎲</div>
+    <div class='mt-time'>已达成</div>
+  </div>
+</a>
+  </div>
+</div>
+
+
+
+<div class='ed-list' style='margin-top:42px'>
+  <div class='ed-list-head'>
+    <span class='h'>话题 · 张真源相关</span>
+    <span class='meta'>TOPICS · 点击跳转抖音搜索</span>
+  </div>
+  <div class='ed-topics'><div class='ed-topics-row'><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源'># 张真源<span class='v'>播放 456.11亿 · 参与 454.5万</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%B5%E7%9C%9F%E6%BA%90?type=challenge' target='_blank' rel='noopener' title='在抖音查看 張真源'># 張真源<span class='v'>播放 673.0万 · 参与 2682</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E8%B7%91%E7%94%B7?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源跑男'># 张真源跑男<span class='v'>播放 5.78亿 · 参与 6.8万</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90ep?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源ep'># 张真源ep<span class='v'>播放 2328.2万 · 参与 7897</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E6%96%B0%E6%AD%8C?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源新歌'># 张真源新歌<span class='v'>播放 6169.0万 · 参与 2.1万</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E5%A5%94%E8%B7%91%E5%90%A7?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源奔跑吧'># 张真源奔跑吧<span class='v'>播放 10.85亿 · 参与 9.0万</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E4%B8%A5%E6%B5%A9%E7%BF%94?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源严浩翔'># 张真源严浩翔<span class='v'>播放 2.14亿 · 参与 1.8万</span></a><a class='tg' href='https://www.douyin.com/search/%E5%AE%8B%E4%BA%9A%E8%BD%A9%E5%BC%A0%E7%9C%9F%E6%BA%90?type=challenge' target='_blank' rel='noopener' title='在抖音查看 宋亚轩张真源'># 宋亚轩张真源<span class='v'>播放 2.16亿 · 参与 1.5万</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E8%BF%9B%E8%A1%8C%E6%9B%B2?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源进行曲'># 张真源进行曲<span class='v'>播放 2.36亿 · 参与 8787</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E5%91%BC%E5%AE%89?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源呼安'># 张真源呼安<span class='v'>播放 3847.9万 · 参与 3104</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E7%94%A8%E6%83%85?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源用情'># 张真源用情<span class='v'>播放 3357.0万 · 参与 4396</span></a><a class='tg' href='https://www.douyin.com/search/%E5%BC%A0%E7%9C%9F%E6%BA%90%E5%AE%8B%E4%BA%9A%E8%BD%A9?type=challenge' target='_blank' rel='noopener' title='在抖音查看 张真源宋亚轩'># 张真源宋亚轩<span class='v'>播放 1.31亿 · 参与 1.3万</span></a></div></div>
+</div>
+
+<div class='ed-export'>
+  <a class='ed-xlsx-btn' href='/api/export-xlsx?sec_uid=MS4wLjABAAAAOpX2NjhZ8eTZFkP6BeKiWOxQXo264vHMFU8Zngk6Nrh61qKZjDjJO5ZvnyoZKN_E&name=%E6%97%B6%E4%BB%A3%E5%B0%91%E5%B9%B4%E5%9B%A2-%E5%BC%A0%E7%9C%9F%E6%BA%90' data-nav='backend'>下载 Excel 数据</a>
+</div>
+
+<div class='foot'>
+  <div class='motto-row'>ZHANG ZHEN YUAN</div>
+  <b>张真源 · 抖音数据月刊</b> · 本地部署 · 仅数据展示，无云端后端
+  <div class='latin'>All for ZZY — Follow the light across time and space</div>
+</div>
+
+</div>
+
+<script>
+(function(){
+  // 给所有带 data-i 的 SVG 圆点装自绘 tooltip
+  function esc(s){return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+  document.querySelectorAll('svg [data-i]').forEach(function(g){
+    var parent = g.closest('svg');
+    if(!parent) return;
+    var wrap = parent.parentElement;
+    if(!wrap) return;
+    var titleTag = g.querySelector('title');
+    var title = titleTag ? titleTag.textContent : '';
+    if(!title) return;
+    g.style.cursor = 'pointer';
+    g.addEventListener('mouseenter', function(ev){
+      if(wrap.__tip) return;
+      var tip = document.createElement('div');
+      tip.className = 'dy-tip';
+      tip.textContent = title;
+      wrap.style.position='relative';
+      wrap.appendChild(tip);
+      wrap.__tip = tip;
+      var r = g.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+      tip.style.left = (r.left + r.width/2 - wr.left) + 'px';
+      tip.style.top  = (r.top - wr.top - 8) + 'px';
+    });
+    g.addEventListener('mouseleave', function(){
+      if(wrap.__tip) { wrap.__tip.remove(); wrap.__tip = null; }
+    });
+  });
+})();
+
+(function(){
+  // 自适应导航：本地服务（有后端）真实跳转；云端静态托管 / 离线（无后端）时
+  // 点击「抓取账号」「后台管理」就地提示
+  function probe(){
+    return fetch('/api/users').then(function(r){return r.json();})
+      .then(function(j){return !!(j && j.ok);})
+      .catch(function(){return false;});
+  }
+  function showHint(a, msg){
+    if(!a || !a.parentNode) return;
+    var s = document.createElement('span');
+    s.className = 'nav-note';
+    s.textContent = msg;
+    a.parentNode.replaceChild(s, a);
+  }
+  var reloadA = document.querySelector('a[data-nav="reload"]');
+  var backends = [].slice.call(document.querySelectorAll('a[data-nav="backend"]'));
+  if (reloadA) {
+    reloadA.addEventListener('click', function(e){ e.preventDefault(); location.reload(); });
+  }
+  backends.forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      probe().then(function(ok){
+        if (ok) { window.location.href = a.getAttribute('href'); }
+        else { showHint(a, '需在本地运行监测服务后使用'); }
+      });
+    });
+  });
+})();
+</script>
+</body></html>
