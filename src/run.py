@@ -31,6 +31,14 @@ def run_once():
     except Exception as e:
         log.error("看板生成失败: %s", e)
 
+    # 采集完成后自动同步到 GitHub（data.json + index.html），
+    # 使 GitHub Pages / CloudStudio 在线版打开即拉取最新数据。
+    try:
+        import publish
+        publish.publish_to_github()
+    except Exception as e:
+        log.error("GitHub 自动同步失败（不影响本地数据）: %s", e)
+
     try:
         push.push_local(summary or {})
     except Exception as e:
