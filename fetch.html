@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>抓取任意抖音账号 · 张真源监测</title>
+<style>
+:root{--gd:#0a6b4f;--gd2:#0d8a63;--bg:#f4f8f6;--card:#fff;--mut:#7a8a83;--bd:#e3ece8;--red:#c0392b;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:#1c2b25}
+.nav{background:var(--gd);color:#fff;position:sticky;top:0;z-index:10}
+.nav-in{max-width:920px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:0 16px;height:52px}
+.brand{display:flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-weight:700}
+.logo{width:26px;height:26px;border-radius:7px;background:#fff;color:var(--gd);display:grid;place-items:center;font-weight:800}
+.nav-links{margin-left:auto;display:flex;gap:6px}
+.nav-links a{color:#dff3ea;text-decoration:none;padding:7px 12px;border-radius:8px;font-size:14px}
+.nav-links a.active{background:rgba(255,255,255,.18);color:#fff}
+.wrap{max-width:920px;margin:0 auto;padding:24px 16px 60px}
+.hr-title{font-size:20px;font-weight:800;color:var(--gd);margin:6px 0 4px}
+.muted{color:var(--mut);font-size:14px}
+.box{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.field{width:100%;padding:12px 14px;border:1px solid var(--bd);border-radius:10px;font-size:15px;outline:none}
+.field:focus{border-color:var(--gd2)}
+.btn{display:inline-block;padding:11px 20px;border-radius:10px;border:none;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none}
+.btn-primary{background:var(--gd);color:#fff}
+.btn-primary:disabled{opacity:.6;cursor:wait}
+.btn-ghost{background:#eef4f1;color:var(--gd);margin-left:8px}
+.err{color:var(--red);border-color:#f0c4bd}
+.warn{margin-top:12px;font-size:13px;color:#8a6d00;background:#fff8e1;border:1px solid #f0e0a0;border-radius:8px;padding:10px}
+.result-card{display:flex;gap:14px;align-items:center}
+.av{width:58px;height:58px;border-radius:50%;object-fit:cover;border:2px solid var(--gd2)}
+.av-ph{width:58px;height:58px;border-radius:50%;background:var(--gd);color:#fff;display:grid;place-items:center;font-size:24px;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.stats div{background:#f6faf8;border:1px solid var(--bd);border-radius:10px;padding:12px;text-align:center;font-size:13px;color:var(--mut)}
+.stats b{display:block;font-size:19px;color:var(--gd);margin-top:4px}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;margin-right:6px;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.tbl-wrap{margin-top:16px;max-height:420px;overflow:auto;border:1px solid var(--bd);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}
+th{position:sticky;top:0;background:var(--gd);color:#fff}
+td a{color:var(--gd2);text-decoration:none}
+.hist{list-style:none;padding:0;margin:10px 0 0}
+.hist li{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border:1px solid var(--bd);border-radius:10px;margin-bottom:8px;background:#fff}
+.u-name{font-weight:700}
+.u-meta{font-size:12px;color:var(--mut);margin-top:2px}
+.u-acts a{margin-left:12px;color:var(--gd2);text-decoration:none;font-weight:600}
+.foot{margin-top:40px;text-align:center;color:var(--mut);font-size:12px}
+.cfg{font-size:12px;color:var(--mut);margin-top:8px}
+.cfg code{background:#eef4f1;padding:2px 6px;border-radius:5px;color:var(--gd)}
+</style></head>
+<body>
+<nav class="nav"><div class="nav-in">
+  <a class="brand" href="./index.html"><span class="logo">张</span><span>张真源监测</span></a>
+  <div class="nav-links">
+    <a href="./index.html">看板</a>
+    <a href="./fetch.html" class="active">抓取账号</a>
+  </div>
+</div></nav>
+<div class="wrap">
+  <div class="hr-title">抓取任意抖音账号</div>
+  <p class="muted" style="margin-bottom:18px">粘贴目标账号的抖音主页链接，一键抓取 TA 的全部公开作品数据（标题、时间、点赞、评论、收藏、分享、播放、下载链接），并直接导出 Excel。纯前端运行，无需登录。</p>
+
+  <div class="box" style="margin-bottom:18px">
+    <input class="field" id="url" placeholder="https://www.douyin.com/user/MS4wLjAB...  或  https://v.douyin.com/xxxxx">
+    <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button class="btn btn-primary" id="btnFetch" type="button">抓取并解析</button>
+      <span class="cfg">Worker 地址：<code id="workerUrl">https://REPLACE-ME.workers.dev</code> <a href="#" id="editW" style="color:var(--gd2)">修改</a></span>
+    </div>
+  </div>
+
+  <div id="result"></div>
+
+  <div class="foot">© kylinwu · 张真源抖音数据监测 · 纯前端工具</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+// Worker 地址：默认从 localStorage 读，没有就用页面里写死的占位（部署时改掉或运行时点"修改"）
+const LS_KEY = "zzy_worker_url";
+function getWorker(){
+  let w = localStorage.getItem(LS_KEY);
+  if(!w) w = document.getElementById("workerUrl").textContent.trim();
+  return w;
+}
+function setWorkerUI(){ document.getElementById("workerUrl").textContent = getWorker(); }
+setWorkerUI();
+document.getElementById("editW").onclick = (e)=>{
+  e.preventDefault();
+  const w = prompt("填入你的 Cloudflare Worker 地址（以 / 结尾或留空，代码会自动补路径）：", getWorker());
+  if(w){ localStorage.setItem(LS_KEY, w.replace(/\/+$/,"")); setWorkerUI(); }
+};
+
+function esc(s){return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function human(n){n=Number(n)||0;if(n>=1e8)return (n/1e8).toFixed(2)+"亿";if(n>=1e4)return (n/1e4).toFixed(1)+"万";return n.toLocaleString();}
+function busy(btn,on){btn.disabled=on;if(on){btn.dataset.t=btn.innerHTML;btn.innerHTML='<span class="spinner"></span>抓取中…';}else{btn.innerHTML=btn.dataset.t;}}
+
+// 从 collector.parse_posts_api 一致字段，浏览器版移植
+function dig(o,...ks){for(const k of ks){if(o==null)return undefined;o=o[k];}return o;}
+function toInt(v){v=Number(v)||0;return v;}
+function parseItem(it){
+  const st = dig(it,"statistics",default={})||{};
+  const vid = dig(it,"video",default={})||{};
+  let cover,play,dl,ptype;
+  if(vid && (vid.cover||vid.play_addr||vid.download_addr)){
+    cover = dig(vid,"cover.url_list.0","cover.urlList.0","cover.url","")||"";
+    play  = dig(vid,"play_addr.url_list.0","play_addr.urlList.0","play_addr.url","")||"";
+    dl    = dig(vid,"download_addr.url_list.0","download_addr.urlList.0","download_addr.url","")||"";
+    ptype = "video";
+  }else{
+    const imgs = dig(it,"images",default=[])||[];
+    cover = imgs.length? (dig(imgs[0],"url_list.0","")||"") : "";
+    play=dl=""; ptype="image";
+  }
+  return {
+    aweme_id: String(dig(it,"aweme_id","")||""),
+    desc: dig(it,"desc","")||"",
+    create_time: toInt(dig(it,"create_time","createTime",0)),
+    ptype,
+    digg_count: toInt(dig(st,"digg_count","diggCount",0)),
+    comment_count: toInt(dig(st,"comment_count","commentCount",0)),
+    collect_count: toInt(dig(st,"collect_count","collectCount",0)),
+    share_count: toInt(dig(st,"share_count","shareCount",0)),
+    play_count: toInt(dig(st,"play_count","playCount",0)),
+    cover_url: cover, play_url: play, download_url: dl,
+    share_url: dig(it,"share_url","shareUrl","")||"",
+  };
+}
+
+async function api(path, params){
+  const w = getWorker();
+  const u = new URL(w + path);
+  for(const [k,v] of Object.entries(params||{})) u.searchParams.set(k,v);
+  const r = await fetch(u.toString());
+  const txt = await r.text();
+  try { return JSON.parse(txt); }
+  catch(e){ throw new Error("Worker 返回非 JSON（可能抖音风控/Worker 地址错误）：\n"+txt.slice(0,200)); }
+}
+
+async function resolveSecUid(input){
+  // 已经是 sec_user_id
+  if(/^MS4w/i.test(input.trim())) return input.trim();
+  const j = await api("/resolve", { url: input.trim() });
+  if(!j.ok) throw new Error(j.error||"解析失败");
+  return j.sec_user_id;
+}
+
+async function fetchPosts(sec_uid){
+  const all=[]; let cursor="0"; let pages=0;
+  while(true){
+    const j = await api("/posts", { sec_user_id: sec_uid, max_cursor: cursor });
+    if(!j || j.status_code && j.status_code!==0) throw new Error("作品接口返回异常："+(j&&j.status_msg||"未知"));
+    const list = j.aweme_list||[];
+    for(const it of list){ all.push(parseItem(it)); }
+    pages++;
+    if(!list.length || !j.has_more || pages>=60) break;
+    cursor = String(j.max_cursor||"0");
+    await new Promise(r=>setTimeout(r,300)); // 降频
+  }
+  return all;
+}
+
+async function fetchProfile(sec_uid){
+  try{
+    const j = await api("/profile", { sec_user_id: sec_uid });
+    const u = j.user||{};
+    return {
+      nickname: u.nickname||"", avatar_url: dig(u,"avatar_thumb.url_list.0","")||"",
+      follower_count: toInt(dig(u,"follower_count","followerCount",0)),
+      total_favorited: toInt(dig(u,"total_favorited","totalFavorited",0)),
+      aweme_count: toInt(dig(u,"aweme_count","awemeCount",0)),
+      profile_url: u.share_url||`https://www.douyin.com/user/${sec_uid}`,
+    };
+  }catch(e){ return { error: String(e.message||e) }; }
+}
+
+function exportXlsx(profile, posts, name){
+  const wsData = [
+    ["抖音账号作品数据导出", "", "", "", "", "", "", "", "", "", "", ""],
+    ["账号", profile.nickname||"", "", "粉丝数", human(profile.follower_count), "", "总获赞", human(profile.total_favorited), "", "主页作品数", human(profile.aweme_count), ""],
+    [],
+    ["序号","作品ID","类型","标题","发布时间","点赞","评论","收藏","分享","播放","下载链接","作品链接"],
+  ];
+  posts.forEach((p,i)=>{
+    wsData.push([
+      i+1, p.aweme_id, p.ptype, p.desc,
+      new Date(p.create_time*1000).toLocaleString("zh-CN"),
+      p.digg_count, p.comment_count, p.collect_count, p.share_count, p.play_count,
+      p.download_url, p.share_url,
+    ]);
+  });
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  ws["!cols"] = [{wch:5},{wch:20},{wch:6},{wch:40},{wch:20},{wch:9},{wch:8},{wch:8},{wch:8},{wch:10},{wch:30},{wch:30}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "作品列表");
+  const fn = (name||"douyin") + "_作品_" + posts.length + "条.xlsx";
+  XLSX.writeFile(wb, fn);
+}
+
+async function fetchUser(){
+  const url=document.getElementById("url").value.trim();
+  if(!url) return alert("请粘贴抖音主页链接");
+  const btn=document.getElementById("btnFetch"); busy(btn,true);
+  const el=document.getElementById("result");
+  el.innerHTML="";
+  try{
+    const sec = await resolveSecUid(url);
+    const prof = await fetchProfile(sec);
+    el.innerHTML = `<div class="box"><div class="muted">已解析 sec_user_id，开始抓取作品…</div></div>`;
+    const posts = await fetchPosts(sec);
+    const av = prof.avatar_url ? `<img class="av" src="${esc(prof.avatar_url)}" alt="">` : `<div class="av-ph">${(prof.nickname||"?").slice(0,1)}</div>`;
+    const warns = prof.error ? [`画像获取失败：${prof.error}（作品仍可用）`] : [];
+    const rows = posts.map((p,i)=>`<tr>
+      <td>${i+1}</td><td>${esc(p.aweme_id)}</td><td>${p.ptype==="image"?"图文":"视频"}</td>
+      <td>${esc(p.desc).slice(0,40)||"(无标题)"}</td>
+      <td>${new Date(p.create_time*1000).toLocaleDateString("zh-CN")}</td>
+      <td>${human(p.digg_count)}</td><td>${human(p.comment_count)}</td>
+      <td>${human(p.collect_count)}</td><td>${human(p.share_count)}</td><td>${human(p.play_count)}</td>
+      <td>${p.download_url?`<a href="${esc(p.download_url)}" target="_blank">下载</a>`:"—"}</td>
+      <td><a href="${esc(p.share_url)}" target="_blank">打开</a></td>
+    </tr>`).join("");
+    el.innerHTML = `<div class="box">
+      <div class="result-card">${av}
+        <div><div style="font-size:18px;font-weight:700;color:var(--gd)">${esc(prof.nickname||"未知账号")}</div>
+        <a class="dl" href="${esc(prof.profile_url||"#")}" target="_blank" style="color:var(--gd2)">在抖音打开主页</a></div></div>
+      <div class="stats">
+        <div>粉丝数<b>${human(prof.follower_count||0)}</b></div>
+        <div>总获赞<b>${human(prof.total_favorited||0)}</b></div>
+        <div>已抓取作品<b>${human(posts.length)}</b></div>
+        <div>主页作品数<b>${human(prof.aweme_count||0)}</b></div>
+      </div>
+      <div style="margin-top:14px">
+        <button class="btn btn-primary" id="btnXl">下载 Excel（${posts.length} 条）</button>
+      </div>
+      ${warns.length?`<div class="warn">提示：${esc(warns.join("；"))}</div>`:""}
+      <div class="tbl-wrap" style="margin-top:16px"><table>
+        <thead><tr><th>#</th><th>作品ID</th><th>类型</th><th>标题</th><th>发布</th><th>点赞</th><th>评论</th><th>收藏</th><th>分享</th><th>播放</th><th>下载</th><th>链接</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>
+    </div>`;
+    document.getElementById("btnXl").onclick = ()=>exportXlsx(prof, posts, prof.nickname||sec.slice(0,12));
+  }catch(e){
+    el.innerHTML = `<div class="box err"><b>抓取失败</b><br>${esc(e.message||e)}</div>
+      <div class="warn">常见原因：① Worker 地址未配置或部署失败（点右上"修改"填入）；② 抖音风控返回非 JSON；③ 链接无法解析 sec_user_id（请直接粘贴 user/MS4w... 主页）。</div>`;
+  }
+  finally{ busy(btn,false); }
+}
+
+document.getElementById("btnFetch").onclick = fetchUser;
+</script>
+</body></html>
